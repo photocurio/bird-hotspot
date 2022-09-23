@@ -1,0 +1,24 @@
+{
+  "name": "bird-hotspot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+	"node-fetch": "^2.6.0"
+  },
+  "devDependencies": {
+    "@11ty/eleventy": "^1.0.2"
+  },
+  "scripts": {
+    "dev": "eleventy --serve",
+    "build": "eleventy",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+	"url": "git+https://github.com/photocurio/bird-hotspot.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
