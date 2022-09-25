@@ -1,3 +1,5 @@
 # bird-hotspot
 
-a web app to find birdwatching hotspots
+A web app to find birdwatching hotspots
+
+Built with 11ty and Mapbox. Data from ebird.
