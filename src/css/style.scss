@@ -1,4 +1,18 @@
 @import '~node_modules/mapbox-gl/dist/mapbox-gl.css';
+@import '~bootstrap/scss/functions';
+
+@import '~bootstrap/scss/variables';
+$popover-body-padding-y: $spacer * .4;
+$popover-body-padding-x: $spacer * .7;
+$popover-font-size: $font-size-sm;
+@import '~bootstrap/scss/maps';
+@import '~bootstrap/scss/mixins';
+@import '~bootstrap/scss/root';
+@import '~bootstrap/scss/popover';
+
+.popover-body {
+	line-height: 1.1;
+}
 
 #map {
 	position: absolute;
@@ -13,8 +27,9 @@
 
 .marker {
 	background: hotpink;
-	width: 8px;
-	height: 8px;
+	width: 10px;
+	height: 10px;
+	border: 1px solid white;
 	border-radius: 50%;
 	cursor: pointer;
 }

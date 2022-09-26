@@ -1,5 +1,7 @@
 import mapboxgl from 'mapbox-gl'
 
+import { Popover } from 'bootstrap'
+
 mapboxgl.accessToken = 'pk.eyJ1IjoicGhvdG9jdXJpbyIsImEiOiJja3FqeDF5M2UwNHZ4MnZydXB2dXcyMzFoIn0.pwFXFrly8A-FTseV_kBlVg'
 // mapboxgl.accessToken = process.env.MAPBOX_TOKEN
 const map = new mapboxgl.Map({
@@ -22,8 +24,17 @@ fetch(`/.netlify/functions/hotspots?regioncode=US-MA-009&back=8`, requestOptions
 	.then(result => result.forEach(feature => {
 		const el = document.createElement('div')
 		el.className = 'marker'
+		el.setAttribute('data-bs-toggle', 'popover')
+		el.setAttribute('data-bs-content', feature.properties.locName)
 		new mapboxgl.Marker(el)
 			.setLngLat(feature.geometry.coordinates)
 			.addTo(map)
 	}))
+	.then(() => {
+		const popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]')
+		const popoverList = [...popoverTriggerList]
+			.map(popoverTriggerEl => new Popover(popoverTriggerEl, {
+				trigger: 'hover'
+			}))
+	})
 	.catch(error => console.error('error', error))
