@@ -3,7 +3,6 @@ import mapboxgl from 'mapbox-gl'
 import { Popover } from 'bootstrap'
 
 mapboxgl.accessToken = 'pk.eyJ1IjoicGhvdG9jdXJpbyIsImEiOiJja3FqeDF5M2UwNHZ4MnZydXB2dXcyMzFoIn0.pwFXFrly8A-FTseV_kBlVg'
-// mapboxgl.accessToken = process.env.MAPBOX_TOKEN
 const map = new mapboxgl.Map({
 	container: 'map',
 	style: 'mapbox://styles/mapbox/outdoors-v11',

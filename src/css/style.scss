@@ -1,25 +1,17 @@
 @import '~node_modules/mapbox-gl/dist/mapbox-gl.css';
-@import '~bootstrap/scss/functions';
-
-@import '~bootstrap/scss/variables';
+$spacer: 1rem;
 $popover-body-padding-y: $spacer * .4;
 $popover-body-padding-x: $spacer * .7;
-$popover-font-size: $font-size-sm;
-@import '~bootstrap/scss/maps';
-@import '~bootstrap/scss/mixins';
-@import '~bootstrap/scss/root';
-@import '~bootstrap/scss/popover';
+
+@import "~bootstrap/scss/bootstrap";
 
 .popover-body {
 	line-height: 1.1;
 }
 
 #map {
-	position: absolute;
-	width: 100%;
-	margin-left: 100px;
-	top: 0;
-	bottom: 0;
+	margin-top: 56px;
+	flex: 1;
 	.pink {
 		color: pink;
 	}
