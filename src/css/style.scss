@@ -1,4 +1,4 @@
-@import '../../node_modules/mapbox-gl/dist/mapbox-gl.css';
+@import '~node_modules/mapbox-gl/dist/mapbox-gl.css';
 
 #map {
 	position: absolute;
@@ -9,4 +9,12 @@
 	.pink {
 		color: pink;
 	}
+}
+
+.marker {
+	background: hotpink;
+	width: 8px;
+	height: 8px;
+	border-radius: 50%;
+	cursor: pointer;
 }

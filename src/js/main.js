@@ -6,20 +6,24 @@ const map = new mapboxgl.Map({
 	container: 'map',
 	style: 'mapbox://styles/mapbox/outdoors-v11',
 	center: [-71, 42.7], // starting position [lng, lat]
-	zoom: 9.5,
-	projection: 'globe'
+	zoom: 9.5
 })
-// const regionCode = 'US-MA-009'
 
-// const requestOptions = {
-// 	method: 'GET',
-// 	headers: {
-// 		'Content-Type': 'application/json',
-// 		'X-eBirdApiToken': process.env.EBIRD_TOKEN //'ouetpkd1ih6j'
-// 	}
-// }
+const requestOptions = {
+	method: 'GET',
+	headers: {
+		'Content-Type': 'application/json',
+		// 'X-eBirdApiToken': process.env.EBIRD_TOKEN //'ouetpkd1ih6j'
+	}
+}
 
-// fetch(`https://api.ebird.org/v2/data/obs/${regionCode}/recent/?fmt=json&back=8`, requestOptions)
-// 	.then(response => response.json())
-// 	.then(result => console.log(result))
-// 	.catch(error => console.error('error', error))
+fetch(`/.netlify/functions/hotspots?regioncode=US-MA-009&back=8`, requestOptions)
+	.then(response => response.json())
+	.then(result => result.forEach(feature => {
+		const el = document.createElement('div')
+		el.className = 'marker'
+		new mapboxgl.Marker(el)
+			.setLngLat(feature.geometry.coordinates)
+			.addTo(map)
+	}))
+	.catch(error => console.error('error', error))
