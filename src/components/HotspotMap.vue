@@ -5,7 +5,7 @@
 <script>
 import mapboxgl from 'mapbox-gl'
 
-// import { Popover } from 'bootstrap'
+import { Popover } from 'bootstrap'
 export default {
     data() {
         return {
@@ -50,6 +50,7 @@ export default {
                 el.setAttribute('data-bs-toggle', 'popover')
                 el.setAttribute('data-bs-content', hotspot.properties.locName)
                 new mapboxgl.Marker(el).setLngLat(hotspot.geometry.coordinates).addTo(map)
+                new Popover(el, { trigger: 'hover' })
             })
         }
     }
