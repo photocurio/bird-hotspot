@@ -37,11 +37,3 @@
         </nav>
     </header>
 </template>
-<script>
-export default {
-    data() {
-        return true
-    }
-}
-</script>
-
