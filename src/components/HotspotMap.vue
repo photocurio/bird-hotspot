@@ -12,15 +12,13 @@ export default {
             hotspots: []
         }
     },
-    created() {
-        this.getHotspots()
-    },
     mounted() {
         mapboxgl.accessToken =
             'pk.eyJ1IjoicGhvdG9jdXJpbyIsImEiOiJja3FqeDF5M2UwNHZ4MnZydXB2dXcyMzFoIn0.pwFXFrly8A-FTseV_kBlVg'
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition((e) => {
                 this.initMap([e.coords.longitude, e.coords.latitude])
+                this.getHotspots(e.coords.longitude, e.coords.latitude)
             })
         } else {
             this.initMap([-74.5, 40])
@@ -47,14 +45,18 @@ export default {
             })
             map.on('move', () => console.log(map.getBounds()))
         },
-        async getHotspots() {
+        async getHotspots(lng, lat) {
             const requestOptions = {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json'
                 }
             }
-            const res = await fetch(`/.netlify/functions/hotspots?regioncode=US-MA-017&back=7`, requestOptions)
+            const countyResponse = await fetch(`/.netlify/functions/getcounty?lat=${lat}&lng=${lng}`, requestOptions)
+            const countyFips = await countyResponse.json()
+            const countyCode = countyFips.County.FIPS
+            const regionCode = `US-${countyFips.State.code}-${countyCode.substr(countyCode.length - 3)}`
+            const res = await fetch(`/.netlify/functions/hotspots?regioncode=${regionCode}&back=7`, requestOptions)
             if (!res.ok) {
                 const message = `Error: ${res.status}, ${res.statusText}`
                 this.hotspots = [message]
