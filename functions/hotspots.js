@@ -2,7 +2,6 @@ const { URL } = require('url')
 const fetch = require('node-fetch')
 const Redis = require('ioredis')
 
-// client.set('foo', 'bar');
 exports.handler = async (event) => {
 	const { regioncode, back } = event.queryStringParameters
 	// @ts-ignore
@@ -12,7 +11,6 @@ exports.handler = async (event) => {
 	try {
 		const cachedRes = await redisClient.get(requestName)
 		if (cachedRes) {
-			console.log('got it from cache')
 			return {
 				statusCode: 200,
 				body: JSON.stringify(JSON.parse(cachedRes))
@@ -31,9 +29,10 @@ exports.handler = async (event) => {
 						body: response.statusText
 					}
 				})
+				// reformat response to geoJson for Mapbox
 				.then(data => {
 					if (data.responseType === 'error') return data
-					const geoJason = data.map(spot => {
+					const geoJson = data.map(spot => {
 						return {
 							geometry: {
 								type: 'Point',
@@ -52,14 +51,13 @@ exports.handler = async (event) => {
 							}
 						}
 					})
-					return geoJason
+					return geoJson
 				})
 				.catch(error => {
 					return error
 				})
-			console.log('got it from ebird, setting cache now	')
-			// cache suration 1 day (86400 seconds)
-			redisClient.set(requestName, JSON.stringify(hotspots), 'EX', 86400)
+			// cache duration a little less than 1 day
+			redisClient.set(requestName, JSON.stringify(hotspots), 'EX', 85400)
 			return {
 				statusCode: 200,
 				body: JSON.stringify(hotspots)
