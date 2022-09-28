@@ -45,7 +45,7 @@ export default {
             map.on('move', () => console.log(map.getBounds()))
         },
         async getHotspots(lng, lat) {
-            const regionCode = await this.getRegionCode(lng, lat)
+            const regionCode = 'US-MA-017' //await this.getRegionCode(lng, lat)
             const res = await fetch(`/.netlify/functions/hotspots?regioncode=${regionCode}&back=7`)
             if (!res.ok) {
                 const message = `Error: ${res.status}, ${res.statusText}`
@@ -64,7 +64,7 @@ export default {
             })
         },
         async getRegionCode(lng, lat) {
-            const countyResponse = await fetch(`/.netlify/functions/getcounty?lat=${lat}&lng=${lng}`)
+            const countyResponse = await fetch(`/.netlify/functions/getcounty?lng=${lng}&lat=${lat}`)
             const countyFips = await countyResponse.json()
             const countyCode = countyFips.County.FIPS
             return `US-${countyFips.State.code}-${countyCode.substr(countyCode.length - 3)}`
