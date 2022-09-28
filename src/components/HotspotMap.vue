@@ -5,7 +5,6 @@
 <script>
 import mapboxgl from 'mapbox-gl'
 
-import { Popover } from 'bootstrap'
 export default {
     data() {
         return {
@@ -46,17 +45,8 @@ export default {
             map.on('move', () => console.log(map.getBounds()))
         },
         async getHotspots(lng, lat) {
-            const requestOptions = {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            }
-            const countyResponse = await fetch(`/.netlify/functions/getcounty?lat=${lat}&lng=${lng}`, requestOptions)
-            const countyFips = await countyResponse.json()
-            const countyCode = countyFips.County.FIPS
-            const regionCode = `US-${countyFips.State.code}-${countyCode.substr(countyCode.length - 3)}`
-            const res = await fetch(`/.netlify/functions/hotspots?regioncode=${regionCode}&back=7`, requestOptions)
+            const regionCode = await this.getRegionCode(lng, lat)
+            const res = await fetch(`/.netlify/functions/hotspots?regioncode=${regionCode}&back=7`)
             if (!res.ok) {
                 const message = `Error: ${res.status}, ${res.statusText}`
                 this.hotspots = [message]
@@ -67,12 +57,19 @@ export default {
             this.hotspots.forEach((hotspot) => {
                 const el = document.createElement('button')
                 el.className = 'marker'
-                el.setAttribute('data-bs-toggle', 'popover')
-                el.setAttribute('data-bs-content', hotspot.properties.locName)
+                el.setAttribute('data-name', hotspot.properties.locName)
+                el.setAttribute('data-id', hotspot.properties.locId)
+                el.addEventListener('click', (e) => this.$emit('marker', e))
                 new mapboxgl.Marker(el).setLngLat(hotspot.geometry.coordinates).addTo(map)
-                new Popover(el, { trigger: 'focus hover' })
             })
+        },
+        async getRegionCode(lng, lat) {
+            const countyResponse = await fetch(`/.netlify/functions/getcounty?lat=${lat}&lng=${lng}`)
+            const countyFips = await countyResponse.json()
+            const countyCode = countyFips.County.FIPS
+            return `US-${countyFips.State.code}-${countyCode.substr(countyCode.length - 3)}`
         }
-    }
+    },
+    emits: ['marker']
 }
 </script>

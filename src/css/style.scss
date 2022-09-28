@@ -10,9 +10,20 @@ $popover-body-padding-x: $spacer * .7;
 	line-height: 1.1;
 }
 
-#map {
+main {
 	margin-top: 56px;
 	flex: 1;
+	display: flex;
+	align-items: stretch;
+}
+
+aside {
+	width: 300px;
+	padding: 1em;
+}
+
+#map {
+	flex-grow: 1;
 	.pink {
 		color: pink;
 	}
