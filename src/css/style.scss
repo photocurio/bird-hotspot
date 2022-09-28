@@ -37,3 +37,25 @@ aside {
 	border-radius: 50%;
 	cursor: pointer;
 }
+
+// .slide-in-enter-active {
+// 	transition: width 1s ease-out;
+// }
+
+/*
+  Enter and leave animations can use different
+  durations and timing functions.
+*/
+.slide-in-enter-active {
+	transform: translateX(20px);
+}
+
+.slide-in-leave-active {
+	transition: all 0.8s cubic-bezier(1, 0.5, 0.8, 1);
+}
+
+.slide-in-enter-from,
+.slide-in-leave-to {
+	transform: translateX(20px);
+	opacity: 0;
+}

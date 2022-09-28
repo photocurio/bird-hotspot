@@ -14,7 +14,7 @@
 
 <script>
 export default {
-    props: ['markerName'],
+    props: ['markerName', 'markerId'],
     data() {
         return {
             info: false

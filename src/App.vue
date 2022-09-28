@@ -3,7 +3,9 @@
         <HeaderNav />
         <main>
             <HotspotMap v-on:marker="handleMarker" />
-            <HotspotInfo v-if="info" v-on:close="handleClose" :markerName="markerName" />
+            <Transition name="slide-in">
+                <HotspotInfo v-if="info" v-on:close="handleClose" :markerName="markerName" :markerId="markerId" />
+            </Transition>
         </main>
         <AppFooter />
     </div>
@@ -24,13 +26,14 @@ export default {
     data() {
         return {
             info: false,
-            markerName: null
+            markerName: null,
+            markerId: null
         }
     },
     methods: {
         handleMarker(e) {
-            console.log(e.target.attributes)
             this.markerName = e.target.attributes['data-name']['nodeValue']
+            this.markerId = e.target.attributes['data-id']['nodeValue']
             this.info = true
         },
         handleClose() {
