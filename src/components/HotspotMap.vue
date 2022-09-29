@@ -4,11 +4,13 @@
 
 <script>
 import mapboxgl from 'mapbox-gl'
-
+import stateCodes from '../data/stateCodes'
+import { uniq, difference } from 'underscore'
 export default {
     data() {
         return {
-            hotspots: []
+            counties: [],
+            markers: []
         }
     },
     mounted() {
@@ -17,7 +19,6 @@ export default {
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition((e) => {
                 this.initMap([e.coords.longitude, e.coords.latitude])
-                this.getHotspots(e.coords.longitude, e.coords.latitude)
             })
         } else {
             this.initMap([-74.5, 40])
@@ -28,48 +29,127 @@ export default {
             window.map = new mapboxgl.Map({
                 container: 'map',
                 style: 'mapbox://styles/mapbox/outdoors-v11',
-                center: location, // [lng, lat]
-                zoom: 9.5
+                center: location,
+                zoom: 10
             })
             map.addControl(
                 new mapboxgl.GeolocateControl({
                     positionOptions: {
                         enableHighAccuracy: true
                     },
-                    trackUserLocation: false
+                    trackUserLocation: false,
+                    fitBoundsOptions: {
+                        maxZoom: 11
+                    }
                 })
             )
+            map.addControl(new mapboxgl.NavigationControl())
             map.on('load', () => {
-                this.applyHotspots(map)
+                map.addSource('counties', {
+                    type: 'vector',
+                    url: 'mapbox://mapbox.82pkq93d'
+                })
+                map.addLayer(
+                    {
+                        id: 'counties',
+                        type: 'fill',
+                        source: 'counties',
+                        'source-layer': 'original',
+                        paint: {
+                            'fill-outline-color': 'rgba(0,0,0,0)',
+                            'fill-color': 'rgba(0,0,0,0)'
+                        }
+                    },
+                    'settlement-label'
+                )
             })
-            map.on('move', () => console.log(map.getBounds()))
+
+            map.on('sourcedata', async (e) => {
+                if (e.sourceId !== 'counties' || !e.isSourceLoaded || !e.hasOwnProperty('tile')) return
+                this.counties = await this.getCounties()
+                if (this.counties.length > 8) {
+                    return this.$emit('errorMessage', 'Unable to fetch so many birding hotspots. Try zooming in.')
+                } else {
+                    this.$emit('errorMessage', '')
+                }
+                await Promise.all(
+                    this.counties.map(async (countyCode) => {
+                        await this.getHotspots(countyCode)
+                    })
+                )
+            })
+
+            map.on('move', () => {
+                const countiesPresent = this.getCounties()
+                // If all counties present are already in state, return.
+                if (!difference(countiesPresent, this.counties).length) return
+                // Else, wipe the hotspots and re-draw.
+                else {
+                    this.counties = countiesPresent
+                    this.removeHotspots()
+                    if (this.counties.length > 7) {
+                        return this.$emit('errorMessage', 'Unable to fetch so many birding hotspots. Try zooming in.')
+                    } else {
+                        this.$emit('errorMessage', '')
+                    }
+                    this.counties.forEach((countyCode) => {
+                        this.getHotspots(countyCode)
+                    })
+                }
+            })
         },
-        async getHotspots(lng, lat) {
-            const regionCode = 'US-MA-017' //await this.getRegionCode(lng, lat)
+        async getHotspots(countyCode) {
+            const countyThreeDigit = countyCode.slice(-3)
+            const stateTwoDigit = countyCode.slice(0, 2)
+            const stateTwoChar = stateCodes[stateTwoDigit]
+            const regionCode = `US-${stateTwoChar}-${countyThreeDigit}`
             const res = await fetch(`/.netlify/functions/hotspots?regioncode=${regionCode}&back=7`)
             if (!res.ok) {
-                const message = `Error: ${res.status}, ${res.statusText}`
-                this.hotspots = [message]
+                console.log(`Error: ${res.status}, ${res.statusText}`)
+            } else {
+                const hotspots = await res.json()
+                if (hotspots.length) {
+                    this.$emit('errorMessage', '')
+                    this.applyHotspots(hotspots)
+                }
             }
-            this.hotspots = await res.json()
         },
-        applyHotspots(map) {
-            this.hotspots.forEach((hotspot) => {
+        applyHotspots(hotspots) {
+            hotspots.forEach((hotspot) => {
                 const el = document.createElement('button')
                 el.className = 'marker'
                 el.setAttribute('data-name', hotspot.properties.locName)
                 el.setAttribute('data-id', hotspot.properties.locId)
                 el.addEventListener('click', (e) => this.$emit('marker', e))
-                new mapboxgl.Marker(el).setLngLat(hotspot.geometry.coordinates).addTo(map)
+                const marker = new mapboxgl.Marker(el).setLngLat(hotspot.geometry.coordinates).addTo(map)
+                this.markers.push(marker)
             })
         },
-        async getRegionCode(lng, lat) {
-            const countyResponse = await fetch(`/.netlify/functions/getcounty?lng=${lng}&lat=${lat}`)
-            const countyFips = await countyResponse.json()
-            const countyCode = countyFips.County.FIPS
-            return `US-${countyFips.State.code}-${countyCode.substr(countyCode.length - 3)}`
+        removeHotspots() {
+            this.markers.forEach((marker) => marker.remove())
+        },
+        getCounties() {
+            const topLeft = new mapboxgl.Point(0, 0)
+            const bottomRight = new mapboxgl.Point(
+                document.getElementById('map').offsetWidth,
+                document.getElementById('map').offsetHeight
+            )
+
+            // pixelbox is an array of Mapbox points.
+            // It represents the size of the map screen.
+            const pixelbox = [topLeft, bottomRight]
+            const countiesPresent = map.queryRenderedFeatures(pixelbox, {
+                layers: ['counties']
+            })
+
+            // We only want the FIPS code for each county.
+            const countyCodes = countiesPresent.map((c) => c.properties.FIPS.toString())
+
+            // Remove duplicates and return the counties.
+            const uniqCounties = uniq(countyCodes)
+            return uniqCounties
         }
     },
-    emits: ['marker']
+    emits: ['marker', 'errorMessage']
 }
 </script>

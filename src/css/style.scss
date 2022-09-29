@@ -59,3 +59,14 @@ aside {
 	transform: translateX(20px);
 	opacity: 0;
 }
+
+.error-message {
+	position: absolute;
+	top: 45%;
+	left: 25%;
+	right: 25%;
+	z-index: 12;
+	text-align: center;
+	background-color: white;
+	padding: 10px;
+}

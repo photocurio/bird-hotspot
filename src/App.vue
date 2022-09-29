@@ -1,8 +1,10 @@
 <template>
     <div class="d-flex flex-column h-100">
         <HeaderNav />
+        <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
         <main>
-            <HotspotMap v-on:marker="handleMarker" />
+            <HotspotMap v-on:marker="handleMarker" v-on:errorMessage="handleErrorMessage" />
+
             <Transition name="slide-in">
                 <HotspotInfo v-if="info" v-on:close="handleClose" :markerName="markerName" :markerId="markerId" />
             </Transition>
@@ -27,7 +29,8 @@ export default {
         return {
             info: false,
             markerName: null,
-            markerId: null
+            markerId: null,
+            errorMessage: ''
         }
     },
     methods: {
@@ -38,6 +41,9 @@ export default {
         },
         handleClose() {
             this.info = false
+        },
+        handleErrorMessage(e) {
+            this.errorMessage = e
         }
     }
 }
