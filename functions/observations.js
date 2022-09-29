@@ -1,19 +1,18 @@
 // const { URL } = require('url')
 const fetch = require('node-fetch')
 exports.handler = async (event) => {
-	const { regioncode, back } = event.queryStringParameters
-	// console.log('EBIRD_TOKEN', process.env.EBIRD_TOKEN)
+	const { locationCode, back } = event.queryStringParameters
 	const requestOptions = {
 		method: 'GET',
 		headers: {
 			'Content-Type': 'application/json',
-			'X-eBirdApiToken': 'ouetpkd1ih6j'
+			'X-eBirdApiToken': process.env.EBIRD_TOKEN
 		}
 	}
 
 	// @ts-ignore
 	const hotspots = await fetch(
-		`https://api.ebird.org/v2/data/obs/${regioncode}/recent?fmt=json&back=${back}`,
+		`https://api.ebird.org/v2/data/obs/${locationCode}/recent?fmt=json&back=${back}`,
 		requestOptions
 	)
 		.then(response => {

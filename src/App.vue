@@ -3,10 +3,10 @@
         <HeaderNav />
         <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
         <main>
-            <HotspotMap v-on:marker="handleMarker" v-on:errorMessage="handleErrorMessage" />
+            <HotspotMap @marker="handleMarker" @errorMessage="handleErrorMessage" @closeInfo="handleClose" />
 
             <Transition name="slide-in">
-                <HotspotInfo v-if="info" v-on:close="handleClose" :markerName="markerName" :markerId="markerId" />
+                <HotspotInfo v-if="info" @closeInfo="handleClose" :marker-name="markerName" :obs="obs" />
             </Transition>
         </main>
         <AppFooter />
@@ -30,20 +30,36 @@ export default {
             info: false,
             markerName: null,
             markerId: null,
-            errorMessage: ''
+            errorMessage: '',
+            obs: []
         }
     },
     methods: {
-        handleMarker(e) {
+        async handleMarker(e) {
+            this.info = false
             this.markerName = e.target.attributes['data-name']['nodeValue']
-            this.markerId = e.target.attributes['data-id']['nodeValue']
+            // this.markerId = e.target.attributes['data-id']['nodeValue']
+            this.obs = await this.getObservations(e.target.attributes['data-id']['nodeValue'])
             this.info = true
         },
         handleClose() {
             this.info = false
+            this.markerName = null
+            this.markerId = null
         },
         handleErrorMessage(e) {
             this.errorMessage = e
+        },
+        async getObservations(markerId) {
+            const res = await fetch(`/.netlify/functions/observations/?locationCode=${markerId}&fmt=json&back=7`)
+            if (!res.ok) {
+                return console.log(`Error: ${res.status}, ${res.statusText}`)
+            } else {
+                const observations = await res.json()
+                if (observations.length) {
+                    return observations
+                }
+            }
         }
     }
 }

@@ -14,8 +14,7 @@ export default {
         }
     },
     mounted() {
-        mapboxgl.accessToken =
-            'pk.eyJ1IjoicGhvdG9jdXJpbyIsImEiOiJja3FqeDF5M2UwNHZ4MnZydXB2dXcyMzFoIn0.pwFXFrly8A-FTseV_kBlVg'
+        mapboxgl.accessToken = process.env.MAPBOX_TOKEN
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition((e) => {
                 this.initMap([e.coords.longitude, e.coords.latitude])
@@ -45,10 +44,12 @@ export default {
             )
             map.addControl(new mapboxgl.NavigationControl())
             map.on('load', () => {
+                // Load vector county data.
                 map.addSource('counties', {
                     type: 'vector',
                     url: 'mapbox://mapbox.82pkq93d'
                 })
+                // Add an invisible county layer.
                 map.addLayer(
                     {
                         id: 'counties',
@@ -65,6 +66,7 @@ export default {
             })
 
             map.on('sourcedata', async (e) => {
+                // only fetch the counties if the county layer is loaded.
                 if (e.sourceId !== 'counties' || !e.isSourceLoaded || !e.hasOwnProperty('tile')) return
                 this.counties = await this.getCounties()
                 if (this.counties.length > 8) {
@@ -86,6 +88,7 @@ export default {
                 // Else, wipe the hotspots and re-draw.
                 else {
                     this.counties = countiesPresent
+                    this.$emit('closeInfo')
                     this.removeHotspots()
                     if (this.counties.length > 7) {
                         return this.$emit('errorMessage', 'Unable to fetch so many birding hotspots. Try zooming in.')
@@ -150,6 +153,6 @@ export default {
             return uniqCounties
         }
     },
-    emits: ['marker', 'errorMessage']
+    emits: ['marker', 'errorMessage', 'closeInfo']
 }
 </script>
