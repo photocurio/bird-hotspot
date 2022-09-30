@@ -1,24 +1,28 @@
 const { URL } = require('url')
 const fetch = require('node-fetch')
-const { Redis } = require('@upstash/redis')
 
 exports.handler = async (event) => {
 
 	const { regioncode, back } = event.queryStringParameters
-	// @ts-ignore
 
-	const redisClient = new Redis({
-		url: process.env.UPSTASH_REDIS_REST_URL,
-		token: process.env.UPSTASH_REDIS_REST_TOKEN
-	})
+	const requestOptions = {
+		method: 'GET',
+		headers: {
+			'Content-Type': 'application/json',
+			Authorization: `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}`
+		}
+	}
 
 	const requestName = `county-hotspots-${regioncode}`
 	try {
-		const cachedRes = await redisClient.get(requestName)
-		if (cachedRes) {
+		// @ts-ignore
+		const cachedRes = await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/get/${requestName}`, requestOptions)
+		const jsonRes = await cachedRes.json()
+
+		if (jsonRes.result) {
 			return {
 				statusCode: 200,
-				body: JSON.stringify(JSON.parse(cachedRes))
+				body: JSON.stringify(JSON.parse(jsonRes.result))
 			}
 		} else {
 			const ebirdApi = new URL(`https://api.ebird.org/v2/ref/hotspot/${regioncode}`)
@@ -61,11 +65,23 @@ exports.handler = async (event) => {
 				.catch(error => {
 					return error
 				})
-			// cache duration a little less than 1 day
-			redisClient.set(requestName, JSON.stringify(hotspots), { 'ex': 85400 })
+
+			const hotspotString = JSON.stringify(hotspots)
+			// @ts-ignore
+			await fetch(
+				`${process.env.UPSTASH_REDIS_REST_URL}/set/${requestName}/?EX=85400`,
+				{
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+						Authorization: `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}`
+					},
+					body: hotspotString
+				}
+			)
 			return {
 				statusCode: 200,
-				body: JSON.stringify(hotspots)
+				body: hotspotString
 			}
 		}
 	}
