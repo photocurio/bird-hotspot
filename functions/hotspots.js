@@ -4,25 +4,31 @@ const fetch = require('node-fetch')
 exports.handler = async (event) => {
 
 	const { regioncode, back } = event.queryStringParameters
-
-	const requestOptions = {
-		method: 'GET',
-		headers: {
-			'Content-Type': 'application/json',
-			Authorization: `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}`
-		}
+	if (!regioncode) return {
+		statusCode: 400,
+		body: 'this request requires an ebird region code'
 	}
 
 	const requestName = `county-hotspots-${regioncode}`
 	try {
 		// @ts-ignore
-		const cachedRes = await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/get/${requestName}`, requestOptions)
+		const cachedRes = await fetch(
+			`${process.env.UPSTASH_REDIS_REST_URL}/get/${requestName}`,
+			{
+				method: 'GET',
+				headers: {
+					'Content-Type': 'application/json',
+					Authorization: `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}`
+				}
+			}
+		)
 		const jsonRes = await cachedRes.json()
 
 		if (jsonRes.result) {
+			const parsedRes = JSON.parse(jsonRes.result)
 			return {
 				statusCode: 200,
-				body: JSON.stringify(JSON.parse(jsonRes.result))
+				body: JSON.stringify(parsedRes)
 			}
 		} else {
 			const ebirdApi = new URL(`https://api.ebird.org/v2/ref/hotspot/${regioncode}`)
