@@ -1,10 +1,12 @@
 const { URL } = require('url')
 const fetch = require('node-fetch')
 const { Redis } = require('@upstash/redis')
+
 exports.handler = async (event) => {
 
 	const { regioncode, back } = event.queryStringParameters
 	// @ts-ignore
+
 	const redisClient = new Redis({
 		url: process.env.UPSTASH_REDIS_REST_URL,
 		token: process.env.UPSTASH_REDIS_REST_TOKEN
@@ -60,7 +62,7 @@ exports.handler = async (event) => {
 					return error
 				})
 			// cache duration a little less than 1 day
-			await redisClient.set(requestName, JSON.stringify(hotspots))
+			redisClient.set(requestName, JSON.stringify(hotspots), { 'ex': 85400 })
 			return {
 				statusCode: 200,
 				body: JSON.stringify(hotspots)

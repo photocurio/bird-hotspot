@@ -4,7 +4,7 @@
 
 <script>
 import mapboxgl from 'mapbox-gl'
-import stateCodes from '../data/stateCodes'
+import stateCodes from '../data/state-codes'
 import { uniq, difference } from 'underscore'
 export default {
     data() {
