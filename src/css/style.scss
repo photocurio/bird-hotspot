@@ -22,6 +22,22 @@ aside {
 	padding: 1em;
 }
 
+.map-wrapper {
+	flex-grow: 1;
+	display: flex;
+	position: relative;
+}
+.county-info {
+	position: absolute;
+	background-color: white;
+	padding: 3px 10px;
+	margin: 0;
+	z-index: 12;
+	border-bottom-right-radius: 8px;
+	p {
+		margin-bottom: 2px;
+	}
+}
 #map {
 	flex-grow: 1;
 	.pink {
@@ -69,4 +85,12 @@ aside {
 	text-align: center;
 	background-color: white;
 	padding: 10px;
+}
+
+.obs {
+	padding: 0;
+	list-style-type: none;
+	li {
+		font-size: 90%;
+	}
 }

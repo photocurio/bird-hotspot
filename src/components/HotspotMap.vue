@@ -1,5 +1,11 @@
 <template>
-    <div id="map"></div>
+    <div class="map-wrapper">
+        <div class="county-info">
+            <p>counties: {{ counties.length }}</p>
+            <p>markers: {{ markers.length }}</p>
+        </div>
+        <div id="map"></div>
+    </div>
 </template>
 
 <script>
@@ -68,39 +74,39 @@ export default {
             map.on('sourcedata', async (e) => {
                 // only fetch the counties if the county layer is loaded.
                 if (e.sourceId !== 'counties' || !e.isSourceLoaded || !e.hasOwnProperty('tile')) return
-                this.counties = await this.getCounties()
-                if (this.counties.length > 8) {
-                    return this.$emit('errorMessage', 'Unable to fetch so many birding hotspots. Try zooming in.')
-                } else {
-                    this.$emit('errorMessage', '')
-                }
+                this.redrawHotspots()
+            })
+            map.on('zoom', this.redrawHotspots)
+            map.on('move', this.redrawHotspots)
+        },
+
+        async redrawHotspots() {
+            const countiesPresent = await this.getCounties()
+            if (countiesPresent.length > 20) {
+                this.$emit('closeInfo')
+                this.removeHotspots()
+                return this.$emit(
+                    'errorMessage',
+                    'Unable to fetch birding hotspots in more than 20 counties. Try zooming in.'
+                )
+            } else {
+                this.$emit('errorMessage', '')
+            }
+            // If all counties present are already in state, return.
+            if (!difference(countiesPresent, this.counties)) return
+            // Else, wipe the hotspots and re-draw.
+            else {
+                this.removeHotspots()
+                this.counties = countiesPresent
+
                 await Promise.all(
                     this.counties.map(async (countyCode) => {
                         await this.getHotspots(countyCode)
                     })
                 )
-            })
-
-            map.on('move', () => {
-                const countiesPresent = this.getCounties()
-                // If all counties present are already in state, return.
-                if (!difference(countiesPresent, this.counties).length) return
-                // Else, wipe the hotspots and re-draw.
-                else {
-                    this.counties = countiesPresent
-                    this.$emit('closeInfo')
-                    this.removeHotspots()
-                    if (this.counties.length > 7) {
-                        return this.$emit('errorMessage', 'Unable to fetch so many birding hotspots. Try zooming in.')
-                    } else {
-                        this.$emit('errorMessage', '')
-                    }
-                    this.counties.forEach((countyCode) => {
-                        this.getHotspots(countyCode)
-                    })
-                }
-            })
+            }
         },
+
         async getHotspots(countyCode) {
             const countyThreeDigit = countyCode.slice(-3)
             const stateTwoDigit = countyCode.slice(0, 2)
@@ -117,8 +123,15 @@ export default {
                 }
             }
         },
+
         applyHotspots(hotspots) {
             hotspots.forEach((hotspot) => {
+                // const dupes = this.markers.map((marker) => {
+                //     if (marker._element.getAttribute('data-id') === hotspot.properties.locId) {
+                //         return hotspot.properties.locId
+                //     }
+                // })
+                // if (dupes.length) return
                 const el = document.createElement('button')
                 el.className = 'marker'
                 el.setAttribute('data-name', hotspot.properties.locName)
@@ -130,6 +143,7 @@ export default {
         },
         removeHotspots() {
             this.markers.forEach((marker) => marker.remove())
+            this.markers = []
         },
         getCounties() {
             const topLeft = new mapboxgl.Point(0, 0)
