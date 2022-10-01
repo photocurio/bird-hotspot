@@ -1,4 +1,3 @@
-// const { URL } = require('url')
 const fetch = require('node-fetch')
 exports.handler = async (event) => {
 	const { locationCode, back } = event.queryStringParameters
@@ -13,9 +12,10 @@ exports.handler = async (event) => {
 			}
 		}
 	)
-	const jsonRes = await cachedRes.json()
-	if (jsonRes.result) {
-		const parsedRes = JSON.parse(jsonRes.result)
+		.then(res => res.json())
+
+	if (cachedRes.result) {
+		const parsedRes = JSON.parse(cachedRes.result)
 		return {
 			statusCode: 200,
 			body: JSON.stringify(parsedRes)
@@ -42,7 +42,8 @@ exports.handler = async (event) => {
 			})
 		const obsString = JSON.stringify(obs)
 		// @ts-ignore
-		const setRedis = await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/set/${requestName}/?EX=85400`,
+		await fetch(
+			`${process.env.UPSTASH_REDIS_REST_URL}/set/${requestName}/?EX=85400`,
 			{
 				method: 'POST',
 				headers: {
