@@ -6,10 +6,6 @@ $popover-body-padding-x: $spacer * .7;
 
 @import "~bootstrap/scss/bootstrap";
 
-.popover-body {
-	line-height: 1.1;
-}
-
 main {
 	margin-top: 56px;
 	flex: 1;
@@ -53,10 +49,6 @@ aside {
 	border-radius: 50%;
 	cursor: pointer;
 }
-
-// .slide-in-enter-active {
-// 	transition: width 1s ease-out;
-// }
 
 /*
   Enter and leave animations can use different

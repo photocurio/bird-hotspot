@@ -31,6 +31,9 @@ export default {
         }
     },
     methods: {
+        /*
+         * This will be deleted. Its just for Dev.
+         */
         computedMarkers() {
             let sum = 0
             const markers = toArray(this.markers)
@@ -39,6 +42,10 @@ export default {
             })
             return sum
         },
+
+        // Initialize the map.
+        // Add controls, load county data, add invisible county boundaries.
+        // Add event listeners.
         initMap(location) {
             window.map = new mapboxgl.Map({
                 container: 'map',
@@ -172,7 +179,6 @@ export default {
             const countiesPresent = map.queryRenderedFeatures(pixelbox, {
                 layers: ['counties']
             })
-
             // We only want the FIPS code for each county.
             const countyCodes = countiesPresent.map((c) => c.properties.FIPS.toString())
 
