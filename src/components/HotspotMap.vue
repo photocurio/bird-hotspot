@@ -1,8 +1,9 @@
 <template>
     <div class="map-wrapper">
         <div class="county-info">
-            <p>counties: {{ counties.length }}</p>
-            <p>markers: {{ markers.length }}</p>
+            <p>number of counties: {{ counties.length }}</p>
+            <small v-for="county in counties" :key="county">{{ county }}, </small>
+            <p>markers: {{ computedMarkers() }}</p>
         </div>
         <div id="map"></div>
     </div>
@@ -11,12 +12,12 @@
 <script>
 import mapboxgl from 'mapbox-gl'
 import stateCodes from '../data/state-codes'
-import { uniq, difference } from 'underscore'
+import { difference, toArray, uniq } from 'underscore'
 export default {
     data() {
         return {
             counties: [],
-            markers: []
+            markers: {}
         }
     },
     mounted() {
@@ -30,6 +31,14 @@ export default {
         }
     },
     methods: {
+        computedMarkers() {
+            let sum = 0
+            const markers = toArray(this.markers)
+            markers.forEach((county) => {
+                sum += county.length
+            })
+            return sum
+        },
         initMap(location) {
             window.map = new mapboxgl.Map({
                 container: 'map',
@@ -92,18 +101,21 @@ export default {
             } else {
                 this.$emit('errorMessage', '')
             }
+            const countiesToAdd = difference(countiesPresent, toArray(this.counties))
+            const countiesToRemove = difference(toArray(this.counties), countiesPresent)
             // If all counties present are already in state, return.
-            if (!difference(countiesPresent, this.counties)) return
-            // Else, wipe the hotspots and re-draw.
-            else {
-                this.removeHotspots()
-                this.counties = countiesPresent
-
+            if (countiesToAdd.length) {
                 await Promise.all(
-                    this.counties.map(async (countyCode) => {
+                    countiesToAdd.map(async (countyCode) => {
                         await this.getHotspots(countyCode)
                     })
                 )
+            }
+
+            if (countiesToRemove.length) {
+                countiesToRemove.forEach((county) => {
+                    this.removeHotspots(county)
+                })
             }
         },
 
@@ -118,7 +130,9 @@ export default {
             } else {
                 const hotspots = await res.json()
                 if (hotspots.length) {
-                    this.$emit('errorMessage', '')
+                    this.counties.push(countyCode)
+                    this.markers[countyCode] = hotspots
+
                     this.applyHotspots(hotspots)
                 }
             }
@@ -126,25 +140,25 @@ export default {
 
         applyHotspots(hotspots) {
             hotspots.forEach((hotspot) => {
-                // const dupes = this.markers.map((marker) => {
-                //     if (marker._element.getAttribute('data-id') === hotspot.properties.locId) {
-                //         return hotspot.properties.locId
-                //     }
-                // })
-                // if (dupes.length) return
                 const el = document.createElement('button')
                 el.className = 'marker'
                 el.setAttribute('data-name', hotspot.properties.locName)
                 el.setAttribute('data-id', hotspot.properties.locId)
+                el.classList.add(hotspot.properties.locId)
                 el.addEventListener('click', (e) => this.$emit('marker', e))
-                const marker = new mapboxgl.Marker(el).setLngLat(hotspot.geometry.coordinates).addTo(map)
-                this.markers.push(marker)
+                new mapboxgl.Marker(el).setLngLat(hotspot.geometry.coordinates).addTo(map)
             })
         },
-        removeHotspots() {
-            this.markers.forEach((marker) => marker.remove())
-            this.markers = []
+
+        removeHotspots(county) {
+            this.markers[county].forEach((marker) => {
+                const el = document.getElementsByClassName(marker.properties.locId)
+                if (el.length) el[0].remove()
+            })
+            delete this.markers[county]
+            this.counties = this.counties.filter((value) => value !== county)
         },
+
         getCounties() {
             const topLeft = new mapboxgl.Point(0, 0)
             const bottomRight = new mapboxgl.Point(
