@@ -1,10 +1,6 @@
 <template>
     <div class="map-wrapper">
-        <div class="county-info">
-            <p>number of counties: {{ counties.length }}</p>
-            <small v-for="county in counties" :key="county">{{ county }}, </small>
-            <p>markers: {{ computedMarkers() }}</p>
-        </div>
+        <div class="about-info"></div>
         <div id="map"></div>
     </div>
 </template>
@@ -12,11 +8,10 @@
 <script>
 import mapboxgl from 'mapbox-gl'
 import stateCodes from '../data/state-codes'
-import { difference, toArray, uniq } from 'underscore'
+import { difference, uniq } from 'underscore'
 export default {
     data() {
         return {
-            counties: [],
             markers: {}
         }
     },
@@ -31,21 +26,11 @@ export default {
         }
     },
     methods: {
-        /*
-         * This will be deleted. Its just for Dev.
-         */
-        computedMarkers() {
-            let sum = 0
-            const markers = toArray(this.markers)
-            markers.forEach((county) => {
-                sum += county.length
-            })
-            return sum
-        },
-
-        // Initialize the map.
-        // Add controls, load county data, add invisible county boundaries.
-        // Add event listeners.
+        // Initialize the map:
+        // 1. add controls
+        // 2. load county data
+        // 3. add invisible county boundaries
+        // 4. add event listeners
         initMap(location) {
             window.map = new mapboxgl.Map({
                 container: 'map',
@@ -65,6 +50,7 @@ export default {
                 })
             )
             map.addControl(new mapboxgl.NavigationControl())
+
             map.on('load', () => {
                 // Load vector county data.
                 map.addSource('counties', {
@@ -72,45 +58,44 @@ export default {
                     url: 'mapbox://mapbox.82pkq93d'
                 })
                 // Add an invisible county layer.
-                map.addLayer(
-                    {
-                        id: 'counties',
-                        type: 'fill',
-                        source: 'counties',
-                        'source-layer': 'original',
-                        paint: {
-                            'fill-outline-color': 'rgba(0,0,0,0)',
-                            'fill-color': 'rgba(0,0,0,0)'
-                        }
-                    },
-                    'settlement-label'
-                )
+                map.addLayer({
+                    id: 'counties',
+                    type: 'fill',
+                    source: 'counties',
+                    'source-layer': 'original',
+                    paint: {
+                        'fill-outline-color': 'rgba(0,0,0,0)',
+                        'fill-color': 'rgba(0,0,0,0)'
+                    }
+                })
             })
 
-            map.on('sourcedata', async (e) => {
+            map.on('sourcedata', (e) => {
                 // only fetch the counties if the county layer is loaded.
                 if (e.sourceId !== 'counties' || !e.isSourceLoaded || !e.hasOwnProperty('tile')) return
                 this.redrawHotspots()
             })
+
             map.on('zoom', this.redrawHotspots)
-            map.on('move', this.redrawHotspots)
+
+            map.on('moveend', this.redrawHotspots)
         },
 
+        // eBird returns hotspots organized by county. We need to know which counties to
+        // fetch and display hotspots for. Get an array of counties present on the map,
+        // and compare it to any counties that are already in memory. Determine which counties
+        // need to be removed fromt the map, and which counties need to be added to the map.
         async redrawHotspots() {
-            const countiesPresent = await this.getCounties()
+            const countiesPresent = this.getCounties()
             if (countiesPresent.length > 20) {
                 this.$emit('closeInfo')
-                this.removeHotspots()
-                return this.$emit(
-                    'errorMessage',
-                    'Unable to fetch birding hotspots in more than 20 counties. Try zooming in.'
-                )
+                return this.$emit('errorMessage', 'Unable to fetch all the birding hotspots. Try zooming in.')
             } else {
-                this.$emit('errorMessage', '')
+                this.$emit('errorMessage', null)
             }
-            const countiesToAdd = difference(countiesPresent, toArray(this.counties))
-            const countiesToRemove = difference(toArray(this.counties), countiesPresent)
-            // If all counties present are already in state, return.
+            const countiesToAdd = difference(countiesPresent, Object.keys(this.markers))
+            const countiesToRemove = difference(Object.keys(this.markers), countiesPresent)
+
             if (countiesToAdd.length) {
                 await Promise.all(
                     countiesToAdd.map(async (countyCode) => {
@@ -120,12 +105,15 @@ export default {
             }
 
             if (countiesToRemove.length) {
-                countiesToRemove.forEach((county) => {
-                    this.removeHotspots(county)
+                countiesToRemove.forEach((countyCode) => {
+                    this.removeHotspots(countyCode)
                 })
             }
         },
 
+        // Gets the birding hotspots for a county from eBird. Uses a serverless function.
+        // Hotspots are saved to state in an array, keyed to the county code.
+        // All saved hotspots are applied to the map.
         async getHotspots(countyCode) {
             const countyThreeDigit = countyCode.slice(-3)
             const stateTwoDigit = countyCode.slice(0, 2)
@@ -137,35 +125,37 @@ export default {
             } else {
                 const hotspots = await res.json()
                 if (hotspots.length) {
-                    this.counties.push(countyCode)
                     this.markers[countyCode] = hotspots
-
                     this.applyHotspots(hotspots)
                 }
             }
         },
 
+        // For each hotspot, create a button and add it to the map.
         applyHotspots(hotspots) {
             hotspots.forEach((hotspot) => {
                 const el = document.createElement('button')
                 el.className = 'marker'
                 el.setAttribute('data-name', hotspot.properties.locName)
                 el.setAttribute('data-id', hotspot.properties.locId)
-                el.classList.add(hotspot.properties.locId)
+                el.setAttribute('id', hotspot.properties.locId)
                 el.addEventListener('click', (e) => this.$emit('marker', e))
                 new mapboxgl.Marker(el).setLngLat(hotspot.geometry.coordinates).addTo(map)
             })
         },
 
+        // Remove sets of hotspots that are in counties longer present on the map.
         removeHotspots(county) {
+            if (!this.markers.hasOwnProperty([county])) return
             this.markers[county].forEach((marker) => {
-                const el = document.getElementsByClassName(marker.properties.locId)
-                if (el.length) el[0].remove()
+                const el = document.getElementById(marker.properties.locId)
+                if (el) el.remove()
             })
             delete this.markers[county]
-            this.counties = this.counties.filter((value) => value !== county)
         },
 
+        // Get an array of 5 digit county FIPS codes. These are the counties that are
+        // present on the visible portion of the map.
         getCounties() {
             const topLeft = new mapboxgl.Point(0, 0)
             const bottomRight = new mapboxgl.Point(
@@ -176,9 +166,11 @@ export default {
             // pixelbox is an array of Mapbox points.
             // It represents the size of the map screen.
             const pixelbox = [topLeft, bottomRight]
+
             const countiesPresent = map.queryRenderedFeatures(pixelbox, {
                 layers: ['counties']
             })
+
             // We only want the FIPS code for each county.
             const countyCodes = countiesPresent.map((c) => c.properties.FIPS.toString())
 
