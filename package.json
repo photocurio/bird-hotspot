@@ -5,7 +5,6 @@
 	"source": "src/index.html",
 	"browserslist": "> 0.5%, last 2 versions, not dead",
 	"dependencies": {
-		"@upstash/redis": "^1.13.1",
 		"node-fetch": "^2.6.0"
 	},
 	"devDependencies": {
