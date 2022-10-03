@@ -20,6 +20,7 @@ export default {
         }
     },
     mounted() {
+        this.loading = true
         mapboxgl.accessToken = process.env.MAPBOX_TOKEN
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition((e) => {
@@ -36,7 +37,6 @@ export default {
         // 3. add invisible county boundaries
         // 4. add event listeners
         initMap(location) {
-            this.loading = true
             window.map = new mapboxgl.Map({
                 container: 'map',
                 style: 'mapbox://styles/mapbox/outdoors-v11',

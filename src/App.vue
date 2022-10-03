@@ -2,11 +2,17 @@
     <div class="d-flex flex-column h-100">
         <HeaderNav />
         <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
-        <main>
-            <HotspotMap @marker="handleMarker" @errorMessage="handleErrorMessage" @closeInfo="handleClose" />
 
-            <Transition name="slide-in">
-                <HotspotInfo v-if="info" @closeInfo="handleClose" :marker-name="markerName" :obs="obs" />
+        <main id="main">
+            <HotspotMap @marker="handleMarker" @errorMessage="handleErrorMessage" @closeInfo="handleClose" />
+            <Transition name="slide" mode="out-in">
+                <HotspotInfo
+                    v-if="info"
+                    @closeInfo="handleClose"
+                    :marker-name="markerName"
+                    :obs="obs"
+                    :height="mainHeight"
+                />
             </Transition>
         </main>
         <AppFooter />
@@ -31,10 +37,18 @@ export default {
             markerName: null,
             markerId: null,
             errorMessage: '',
-            obs: []
+            obs: [],
+            mainHeight: null
         }
     },
+    mounted() {
+        this.getMapHeight()
+    },
     methods: {
+        getMapHeight() {
+            const el = document.getElementById('main')
+            this.mainHeight = el.offsetHeight
+        },
         async handleMarker(e) {
             this.info = false
             this.markerName = e.target.attributes['data-name']['nodeValue']

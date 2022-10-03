@@ -16,12 +16,14 @@ main {
 aside {
 	width: 300px;
 	padding: 1em;
+	overflow-y: scroll;
 }
 
 .map-wrapper {
 	flex-grow: 1;
 	display: flex;
 	position: relative;
+	background-color: #efe9e1;
 }
 .county-info {
 	position: absolute;
@@ -36,6 +38,7 @@ aside {
 }
 #map {
 	flex-grow: 1;
+	background-color: #efe9e1;
 	.pink {
 		color: pink;
 	}
@@ -48,26 +51,33 @@ aside {
 	border: 1px solid white;
 	border-radius: 50%;
 	cursor: pointer;
+	@media screen and (min-width: 600px) {
+		width: 1rem;
+		height: 1rem;
+	}
 }
 
 /*
   Enter and leave animations can use different
   durations and timing functions.
 */
-.slide-in-enter-active {
-	transform: translateX(20px);
-}
-
-.slide-in-leave-active {
-	transition: all 0.8s cubic-bezier(1, 0.5, 0.8, 1);
-}
-
-.slide-in-enter-from,
-.slide-in-leave-to {
-	transform: translateX(20px);
+.slide-enter-from {
+	transform: translateX(100%);
 	opacity: 0;
 }
 
+.slide-leave-to {
+	transform: translateX(100%);
+	opacity: 0;
+}
+
+.slide-leave-active, .slide-enter-active {
+	transition: all 1s ease-out;
+}
+
+.about-info {
+	background-color: white;
+}
 .error-message {
 	position: absolute;
 	top: 45%;
@@ -81,6 +91,7 @@ aside {
 
 .obs {
 	padding: 0;
+	margin-bottom: .5rem;
 	list-style-type: none;
 	li {
 		font-size: 90%;

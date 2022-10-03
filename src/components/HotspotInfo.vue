@@ -1,5 +1,5 @@
 <template>
-    <aside>
+    <aside :style="{ height: height + 'px' }">
         <h5>{{ markerName }}</h5>
         <ul class="obs">
             <li v-for="ob in obs" v-bind:key="ob.speciesCode">{{ ob.comName }}, {{ ob.howMany ? ob.howMany : 1 }}</li>
@@ -12,6 +12,7 @@
 export default {
     props: {
         markerName: String,
+        height: Number,
         obs: Array
     }
 }
