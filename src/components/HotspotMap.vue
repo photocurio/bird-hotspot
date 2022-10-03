@@ -1,6 +1,9 @@
 <template>
     <div class="map-wrapper">
         <div class="about-info"></div>
+        <div v-if="loading" class="loading">
+            <img :src="require('../images/bird-flying.gif')" alt="Bird flying" />
+        </div>
         <div id="map"></div>
     </div>
 </template>
@@ -12,6 +15,7 @@ import { difference, uniq } from 'underscore'
 export default {
     data() {
         return {
+            loading: false,
             markers: {}
         }
     },
@@ -32,6 +36,7 @@ export default {
         // 3. add invisible county boundaries
         // 4. add event listeners
         initMap(location) {
+            this.loading = true
             window.map = new mapboxgl.Map({
                 container: 'map',
                 style: 'mapbox://styles/mapbox/outdoors-v11',
@@ -70,10 +75,11 @@ export default {
                 })
             })
 
-            map.on('sourcedata', (e) => {
+            map.on('sourcedata', async (e) => {
                 // only fetch the counties if the county layer is loaded.
                 if (e.sourceId !== 'counties' || !e.isSourceLoaded || !e.hasOwnProperty('tile')) return
-                this.redrawHotspots()
+                await this.redrawHotspots()
+                this.loading = false
             })
 
             map.on('zoom', this.redrawHotspots)

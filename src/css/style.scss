@@ -86,3 +86,18 @@ aside {
 		font-size: 90%;
 	}
 }
+
+.loading {
+	height: 100%;
+	z-index: 12;
+	mix-blend-mode: multiply;
+	img {
+		top: 50%;
+		left: 50%;
+		margin-left: -80px;
+		position: absolute;
+		margin-top: -60px;
+		width: 160px;
+		height: 120px;	
+	}
+}
