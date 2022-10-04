@@ -14,9 +14,12 @@ main {
 }
 
 aside {
+	position: absolute;
+	right: 0;
 	width: 300px;
 	padding: 1em;
 	overflow-y: scroll;
+	background-color: white;
 }
 
 .map-wrapper {
@@ -25,17 +28,7 @@ aside {
 	position: relative;
 	background-color: #efe9e1;
 }
-.county-info {
-	position: absolute;
-	background-color: white;
-	padding: 3px 10px;
-	margin: 0;
-	z-index: 12;
-	border-bottom-right-radius: 8px;
-	p {
-		margin-bottom: 2px;
-	}
-}
+
 #map {
 	flex-grow: 1;
 	background-color: #efe9e1;
@@ -75,9 +68,6 @@ aside {
 	transition: all 1s ease-out;
 }
 
-.about-info {
-	background-color: white;
-}
 .error-message {
 	position: absolute;
 	top: 45%;
@@ -107,8 +97,25 @@ aside {
 		left: 50%;
 		margin-left: -80px;
 		position: absolute;
+		z-index: 14;
 		margin-top: -60px;
 		width: 160px;
-		height: 120px;	
+		height: 120px;
 	}
+	&-background {
+		top: 50%;
+		left: 50%;
+		margin-left: -70px;
+		z-index: 13;
+		position: absolute;
+		margin-top: -70px;
+		border-radius: 50%;
+		width: 140px;
+		height: 140px;
+		background-color: #efe9e1;
+	}
+}
+
+.about-info {
+	background-color: white;
 }
