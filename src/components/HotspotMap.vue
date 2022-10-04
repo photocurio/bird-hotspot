@@ -1,9 +1,11 @@
 <template>
     <div class="map-wrapper">
         <div class="about-info"></div>
-        <div v-if="loading" class="loading">
-            <img :src="require('../images/bird-flying.gif')" alt="Bird flying" />
-        </div>
+        <Transition name="fade">
+            <div v-if="loading" class="loading">
+                <img :src="require('../images/bird-flying.gif')" alt="Bird flying" />
+            </div>
+        </Transition>
         <div id="map"></div>
     </div>
 </template>
@@ -11,7 +13,7 @@
 <script>
 import mapboxgl from 'mapbox-gl'
 import stateCodes from '../data/state-codes'
-import { difference, uniq } from 'underscore'
+import { difference, uniq, toArray } from 'underscore'
 export default {
     data() {
         return {
@@ -145,9 +147,21 @@ export default {
                 el.setAttribute('data-name', hotspot.properties.locName)
                 el.setAttribute('data-id', hotspot.properties.locId)
                 el.setAttribute('id', hotspot.properties.locId)
-                el.addEventListener('click', (e) => this.$emit('marker', e))
+                el.addEventListener('click', this.markerHandler)
                 new mapboxgl.Marker(el).setLngLat(hotspot.geometry.coordinates).addTo(map)
             })
+        },
+
+        markerHandler(e) {
+            // remove active class from all markers
+            const markers = toArray(document.getElementsByClassName('marker'))
+            markers.forEach((marker) => marker.classList.remove('active'))
+            // set active class on target marker
+            const target = document.getElementById(e.target.id)
+            target.classList.add('active')
+            // Emit the marker event that tells the app
+            // to show the aside with hotspot data
+            this.$emit('marker', e)
         },
 
         // Remove sets of hotspots that are in counties longer present on the map.

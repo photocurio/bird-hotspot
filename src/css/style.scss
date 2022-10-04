@@ -48,6 +48,11 @@ aside {
 		width: 1rem;
 		height: 1rem;
 	}
+	&.active {
+		background: tomato;
+		width: 1.5rem;
+		height: 1.5rem;
+	}
 }
 
 /*
@@ -65,7 +70,15 @@ aside {
 }
 
 .slide-leave-active, .slide-enter-active {
-	transition: all 1s ease-out;
+	transition: all .5s ease-out;
+}
+
+.fade-enter-active, .fade-leave-active {
+	transition: opacity .5s ease-out;
+}
+
+.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+	opacity: 0;
 }
 
 .error-message {
@@ -92,6 +105,7 @@ aside {
 	height: 100%;
 	z-index: 12;
 	mix-blend-mode: multiply;
+	transition: all 1s ease;
 	img {
 		top: 50%;
 		left: 50%;
@@ -101,18 +115,6 @@ aside {
 		margin-top: -60px;
 		width: 160px;
 		height: 120px;
-	}
-	&-background {
-		top: 50%;
-		left: 50%;
-		margin-left: -70px;
-		z-index: 13;
-		position: absolute;
-		margin-top: -70px;
-		border-radius: 50%;
-		width: 140px;
-		height: 140px;
-		background-color: #efe9e1;
 	}
 }
 
