@@ -1,5 +1,5 @@
 .slide {
-	&-leave-active, &-enter-active {
+	&-enter-active, &-leave-active {
 		transition: all .5s ease-out;
 	}
 	&-enter-from, &-leave-to {
@@ -13,6 +13,15 @@
 		transition: opacity .5s ease-out;
 	}
 	&-enter, &-leave-to {
+		opacity: 0;
+	}
+}
+
+.fade-about {
+	&-enter-active, &-leave-active {
+		transition: opacity .5s ease-out;
+	}
+	&-enter-from, &-leave-to {
 		opacity: 0;
 	}
 }

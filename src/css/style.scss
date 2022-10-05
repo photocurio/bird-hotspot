@@ -10,6 +10,8 @@ $popover-body-padding-x: $spacer * .7;
 
 @import 'aside';
 
+@import 'about';
+
 main {
 	margin-top: 56px;
 	flex: 1;
@@ -42,6 +44,9 @@ main {
 	@media screen and (min-width: 600px) {
 		width: 1rem;
 		height: 1rem;
+	}
+	&.hidden {
+		opacity: 0;
 	}
 	&.active {
 		background: tomato;
@@ -81,8 +86,4 @@ main {
 		width: 160px;
 		height: 120px;
 	}
-}
-
-.about-info {
-	background-color: white;
 }

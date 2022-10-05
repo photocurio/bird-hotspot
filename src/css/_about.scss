@@ -1,0 +1,28 @@
+$mobile: 50px;
+$desktop: 100px;
+
+.about-info {
+	background-color: white;
+	overflow-y: scroll;
+	position: absolute;
+	left: $mobile;
+	top: $mobile;
+	right: $mobile;
+	padding: 1rem;
+	z-index: 12;
+	text-align: center;
+	@media screen and (min-width: 600px) {
+		left: $desktop;
+		top: $desktop;
+		right: $desktop;
+		padding: 1rem;
+	}
+	code {
+		background-color: antiquewhite;
+		color: black;
+		padding: 0 6px;
+	}
+	p {
+		margin-bottom: .5rem;
+	}
+}
