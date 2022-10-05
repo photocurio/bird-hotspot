@@ -1,0 +1,18 @@
+.slide {
+	&-leave-active, &-enter-active {
+		transition: all .5s ease-out;
+	}
+	&-enter-from, &-leave-to {
+		transform: translateX(100%);
+		opacity: 0;
+	}
+}
+
+.fade {
+	&-enter-active, &-leave-active {
+		transition: opacity .5s ease-out;
+	}
+	&-enter, &-leave-to {
+		opacity: 0;
+	}
+}

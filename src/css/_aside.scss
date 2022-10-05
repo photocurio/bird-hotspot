@@ -1,0 +1,22 @@
+aside {
+	position: absolute;
+	right: 0;
+	width: 300px;
+	padding: 1em;
+	overflow-y: scroll;
+	background-color: white;
+	h5 {
+		margin-bottom: 0;
+	}
+}
+
+ul.obs {
+	padding: 0;
+	margin-bottom: .5rem;
+	list-style-type: none;
+	
+	li {
+		font-size: 90%;
+		margin-bottom: 0;
+	}
+}

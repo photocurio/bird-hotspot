@@ -6,20 +6,15 @@ $popover-body-padding-x: $spacer * .7;
 
 @import "~bootstrap/scss/bootstrap";
 
+@import 'transitions';
+
+@import 'aside';
+
 main {
 	margin-top: 56px;
 	flex: 1;
 	display: flex;
 	align-items: stretch;
-}
-
-aside {
-	position: absolute;
-	right: 0;
-	width: 300px;
-	padding: 1em;
-	overflow-y: scroll;
-	background-color: white;
 }
 
 .map-wrapper {
@@ -55,32 +50,6 @@ aside {
 	}
 }
 
-/*
-  Enter and leave animations can use different
-  durations and timing functions.
-*/
-.slide-enter-from {
-	transform: translateX(100%);
-	opacity: 0;
-}
-
-.slide-leave-to {
-	transform: translateX(100%);
-	opacity: 0;
-}
-
-.slide-leave-active, .slide-enter-active {
-	transition: all .5s ease-out;
-}
-
-.fade-enter-active, .fade-leave-active {
-	transition: opacity .5s ease-out;
-}
-
-.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
-	opacity: 0;
-}
-
 .error-message {
 	position: absolute;
 	top: 45%;
@@ -90,15 +59,6 @@ aside {
 	text-align: center;
 	background-color: white;
 	padding: 10px;
-}
-
-.obs {
-	padding: 0;
-	margin-bottom: .5rem;
-	list-style-type: none;
-	li {
-		font-size: 90%;
-	}
 }
 
 .loading {
