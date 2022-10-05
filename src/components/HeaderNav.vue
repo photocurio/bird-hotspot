@@ -23,12 +23,13 @@
                             <a class="nav-link" href="/about/">About</a>
                         </li>
                     </ul>
-                    <form class="d-flex" role="search">
+                    <form class="d-flex" role="search" @submit.prevent="submitLocation">
                         <input
                             class="form-control me-2"
                             type="search"
-                            placeholder="Enter a location"
+                            placeholder="town or city, state"
                             aria-label="Search"
+                            name="query"
                         />
                         <button class="btn btn-outline-success" type="submit">Go</button>
                     </form>
@@ -37,3 +38,24 @@
         </nav>
     </header>
 </template>
+
+<script>
+export default {
+    methods: {
+        async submitLocation(e) {
+            const data = new FormData(e.target)
+            const query = data.get('query')
+            // escape HTML and filter queries longer than 100 chars
+            const escaped = encodeURI(query)
+            if (escaped.length > 100) return
+            const res = await fetch(`/.netlify/functions/geocoding/?q=${query}`)
+            const resJson = await res.json()
+            if (!window.map.loaded()) return
+            window.map.jumpTo({
+                center: [resJson.address.lng, resJson.address.lat],
+                zoom: 9.5
+            })
+        }
+    }
+}
+</script>
