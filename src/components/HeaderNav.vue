@@ -17,10 +17,14 @@
                 <div class="collapse navbar-collapse" id="navbarCollapse">
                     <ul class="navbar-nav me-auto mb-2 mb-md-0">
                         <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="/">Home</a>
+                            <a :class="{ active: !about }" class="nav-link" href="" @click.prevent="homeHandler"
+                                >Home</a
+                            >
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/about/">About</a>
+                            <a :class="{ active: about }" class="nav-link" href="" @click.prevent="aboutHandler"
+                                >About</a
+                            >
                         </li>
                     </ul>
                     <form class="d-flex" role="search" @submit.prevent="submitLocation">
@@ -41,7 +45,20 @@
 
 <script>
 export default {
+    data() {
+        return {
+            about: false
+        }
+    },
     methods: {
+        aboutHandler(e) {
+            this.about = true
+            this.$emit('about', true)
+        },
+        homeHandler(e) {
+            this.about = false
+            this.$emit('about', false)
+        },
         async submitLocation(e) {
             const data = new FormData(e.target)
             const query = data.get('query')

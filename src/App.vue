@@ -1,10 +1,15 @@
 <template>
     <div class="d-flex flex-column h-100">
-        <HeaderNav />
+        <HeaderNav @about="aboutMessage" />
         <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
 
         <main id="main">
-            <HotspotMap @marker="handleMarker" @errorMessage="handleErrorMessage" @closeInfo="handleClose" />
+            <HotspotMap
+                @marker="handleMarker"
+                @errorMessage="handleErrorMessage"
+                @closeInfo="handleClose"
+                :about="about"
+            />
             <Transition name="slide" mode="out-in">
                 <HotspotInfo
                     v-if="info"
@@ -39,13 +44,17 @@ export default {
             markerId: null,
             errorMessage: '',
             obs: [],
-            mainHeight: null
+            mainHeight: null,
+            about: false
         }
     },
     mounted() {
         this.getMapHeight()
     },
     methods: {
+        aboutMessage(e) {
+            this.about = e
+        },
         getMapHeight() {
             const el = document.getElementById('main')
             this.mainHeight = el.offsetHeight
