@@ -34,8 +34,8 @@ main {
 
 .marker {
 	background: hotpink;
-	width: 1.4rem;
-	height: 1.4rem;
+	width: 1.35rem;
+	height: 1.35rem;
 	border: 1px solid white;
 	border-radius: 50%;
 	cursor: pointer;
@@ -45,8 +45,13 @@ main {
 	}
 	&.active {
 		background: tomato;
-		width: 1.5rem;
-		height: 1.5rem;
+		border-width: 2px;
+		width: 1.55rem;
+		height: 1.55rem;
+		@media screen and (min-width: 600px) {
+			width: 1.4rem;
+			height: 1.4rem;
+		}
 	}
 }
 

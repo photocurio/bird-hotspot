@@ -142,6 +142,8 @@ export default {
         // For each hotspot, create a button and add it to the map.
         applyHotspots(hotspots) {
             hotspots.forEach((hotspot) => {
+                // If the hotspot already exists, early return.
+                if (document.getElementById(hotspot.properties.locId)) return
                 const el = document.createElement('button')
                 el.className = 'marker'
                 el.setAttribute('data-name', hotspot.properties.locName)
