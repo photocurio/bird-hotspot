@@ -1,8 +1,5 @@
 <template>
     <div class="map-wrapper">
-        <Transition name="fade-about">
-            <AboutModal v-if="aboutMessage" />
-        </Transition>
         <Transition name="fade">
             <div v-if="loading" class="loading">
                 <img :src="require('../images/bird-flying.gif')" alt="Bird flying" />
@@ -15,14 +12,12 @@
 <script>
 import mapboxgl from 'mapbox-gl'
 import stateCodes from '../data/state-codes'
-import AboutModal from './AboutModal'
 import { difference, uniq, toArray } from 'underscore'
 export default {
     data() {
         return {
             loading: false,
-            markers: {},
-            aboutMessage: false
+            markers: {}
         }
     },
     mounted() {
@@ -36,26 +31,7 @@ export default {
             this.initMap([-74.5, 40])
         }
     },
-    components: {
-        AboutModal
-    },
-    props: {
-        about: Boolean
-    },
-    watch: {
-        about: function (newVal) {
-            const markers = toArray(document.getElementsByClassName('marker'))
-            if (newVal) {
-                markers.forEach((marker) => marker.classList.add('hidden'))
-                this.aboutMessage = true
-            } else {
-                markers.forEach((marker) => marker.classList.remove('hidden'))
-                this.aboutMessage = false
-            }
-        }
-    },
     emits: ['marker', 'errorMessage', 'closeInfo'],
-
     methods: {
         // Initialize the map:
         // 1. add controls

@@ -1,15 +1,10 @@
 <template>
     <div class="d-flex flex-column h-100">
-        <HeaderNav @about="aboutMessage" />
+        <HeaderNav />
         <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
 
         <main id="main">
-            <HotspotMap
-                @marker="handleMarker"
-                @errorMessage="handleErrorMessage"
-                @closeInfo="handleClose"
-                :about="about"
-            />
+            <HotspotMap @marker="handleMarker" @errorMessage="handleErrorMessage" />
             <Transition name="slide" mode="out-in">
                 <HotspotInfo
                     v-if="info"
@@ -29,7 +24,6 @@ import HeaderNav from './components/HeaderNav'
 import AppFooter from './components/AppFooter'
 import HotspotMap from './components/HotspotMap'
 import HotspotInfo from './components/HotspotInfo'
-import { toArray } from 'underscore'
 export default {
     components: {
         HeaderNav,
@@ -44,17 +38,13 @@ export default {
             markerId: null,
             errorMessage: '',
             obs: [],
-            mainHeight: null,
-            about: false
+            mainHeight: null
         }
     },
     mounted() {
         this.getMapHeight()
     },
     methods: {
-        aboutMessage(e) {
-            this.about = e
-        },
         getMapHeight() {
             const el = document.getElementById('main')
             this.mainHeight = el.offsetHeight
@@ -65,13 +55,6 @@ export default {
             // this.markerId = e.target.attributes['data-id']['nodeValue']
             this.obs = await this.getObservations(e.target.attributes['data-id']['nodeValue'])
             this.info = true
-        },
-        handleClose() {
-            const markers = toArray(document.getElementsByClassName('marker'))
-            markers.forEach((marker) => marker.classList.remove('active'))
-            this.info = false
-            this.markerName = null
-            this.markerId = null
         },
         handleErrorMessage(e) {
             this.errorMessage = e
