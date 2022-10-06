@@ -42,7 +42,6 @@ export default {
     },
     methods: {
         aboutHandler(e) {
-            console.log('aboutHandler', e)
             const markers = toArray(document.getElementsByClassName('marker'))
             if (e === 'open') {
                 markers.forEach((marker) => marker.classList.add('hidden'))
