@@ -16,8 +16,9 @@
             </svg>
         </button>
         <h5>{{ markerName }}</h5>
-        Observations, past 7 days:
-        <ul class="obs">
+        <span v-if="obs">Observations, past 7 days:</span>
+        <span v-else>No observations recorded in the past 7 days.</span>
+        <ul class="obs" v-if="obs">
             <li v-for="ob in obs" v-bind:key="ob.speciesCode">{{ ob.comName }}, {{ ob.howMany ? ob.howMany : 1 }}</li>
         </ul>
     </aside>
