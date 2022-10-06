@@ -1,8 +1,6 @@
 @import '../../node_modules/mapbox-gl/dist/mapbox-gl.css';
 
-$spacer: 1rem;
-$popover-body-padding-y: $spacer * .4;
-$popover-body-padding-x: $spacer * .7;
+$font-family-sans-serif: 'Poppins', sans-serif;
 
 @import "~bootstrap/scss/bootstrap";
 
