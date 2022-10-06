@@ -18,7 +18,7 @@
                         aria-label="Search"
                         name="query"
                     />
-                    <button class="btn btn-outline-success" type="submit">Go</button>
+                    <button class="btn btn-outline-light" type="submit">Go</button>
                 </form>
             </div>
         </nav>
@@ -40,6 +40,7 @@ export default {
     components: {
         AboutModal
     },
+    emits: ['closeInfo'],
     methods: {
         aboutHandler(e) {
             const markers = toArray(document.getElementsByClassName('marker'))
@@ -52,6 +53,8 @@ export default {
             }
         },
         async submitLocation(e) {
+            this.aboutHandler(close)
+            this.$emit('closeInfo')
             const data = new FormData(e.target)
             const query = data.get('query')
             // escape HTML and filter queries longer than 100 chars
