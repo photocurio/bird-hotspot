@@ -42,6 +42,9 @@ export default {
             mainHeight: null
         }
     },
+    created() {
+        window.addEventListener('resize', this.getMapHeight)
+    },
     mounted() {
         this.getMapHeight()
     },
