@@ -4,7 +4,7 @@
         <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
 
         <main id="main">
-            <HotspotMap @marker="handleMarker" @errorMessage="handleErrorMessage" />
+            <HotspotMap @marker="handleMarker" @errorMessage="handleErrorMessage" @closeInfo="handleClose" />
             <Transition name="slide" mode="out-in">
                 <HotspotInfo
                     v-if="info"
@@ -24,6 +24,7 @@ import HeaderNav from './components/HeaderNav'
 import AppFooter from './components/AppFooter'
 import HotspotMap from './components/HotspotMap'
 import HotspotInfo from './components/HotspotInfo'
+import { toArray } from 'underscore'
 export default {
     components: {
         HeaderNav,
@@ -48,6 +49,13 @@ export default {
         getMapHeight() {
             const el = document.getElementById('main')
             this.mainHeight = el.offsetHeight
+        },
+        handleClose() {
+            const markers = toArray(document.getElementsByClassName('marker'))
+            markers.forEach((marker) => marker.classList.remove('active'))
+            this.info = false
+            this.markerName = null
+            this.markerId = null
         },
         async handleMarker(e) {
             this.info = false

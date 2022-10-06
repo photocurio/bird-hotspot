@@ -1,6 +1,6 @@
 <template>
     <header>
-        <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+        <nav class="navbar navbar-expand-md navbar-dark bg-dark">
             <div class="container-fluid">
                 <a class="navbar-brand" href="#" @click.prevent="aboutHandler('close')">Bird Hotspot</a>
                 <ul class="navbar-nav me-auto">
