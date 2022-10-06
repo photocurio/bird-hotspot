@@ -16,6 +16,7 @@
             </svg>
         </button>
         <h5>{{ markerName }}</h5>
+        Observations, past 7 days:
         <ul class="obs">
             <li v-for="ob in obs" v-bind:key="ob.speciesCode">{{ ob.comName }}, {{ ob.howMany ? ob.howMany : 1 }}</li>
         </ul>
