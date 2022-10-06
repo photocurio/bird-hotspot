@@ -5,17 +5,16 @@ $desktop: 100px;
 	background-color: white;
 	overflow-y: scroll;
 	position: absolute;
-	left: $mobile;
-	top: $mobile;
-	right: $mobile;
+	top: 50%;
+	transform: translateY(-51%);
+	max-width: 800px;
+	margin: 0 2rem;
 	padding: 1rem;
 	z-index: 12;
 	text-align: center;
 	@media screen and (min-width: 600px) {
-		left: $desktop;
-		top: $desktop;
-		right: $desktop;
-		padding: 1rem;
+		left: 50%;
+		transform: translateY(-51%) translateX(-50%);
 	}
 	code {
 		background-color: antiquewhite;
