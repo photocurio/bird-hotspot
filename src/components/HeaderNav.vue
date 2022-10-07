@@ -62,7 +62,7 @@ export default {
             if (escaped.length > 100) return
             const res = await fetch(`/.netlify/functions/geocoding/?q=${query}`)
             const resJson = await res.json()
-            if (!window.map.loaded()) return
+            if (!window.map || !window.map.loaded()) return
             window.map.jumpTo({
                 center: [resJson.address.lng, resJson.address.lat],
                 zoom: 9.5
