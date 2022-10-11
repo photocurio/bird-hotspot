@@ -5,10 +5,10 @@
 	"source": "src/index.html",
 	"browserslist": "> 0.5%, last 2 versions, not dead",
 	"dependencies": {
-		"mapbox-gl": "^2.10.0",
-		"node-fetch": "^2.6.0",
 		"@popperjs/core": "^2.11.6",
 		"bootstrap": "^5.2.1",
+		"mapbox-gl": "^2.10.0",
+		"node-fetch": "^2.6.0",
 		"underscore": "^1.13.6",
 		"vue": "^3.2.39"
 	},
