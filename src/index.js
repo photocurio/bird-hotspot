@@ -1,8 +1,10 @@
-globalThis.__VUE_OPTIONS_API__ = true
-globalThis.__VUE_PROD_DEVTOOLS__ = false
+import React from 'react'
+import ReactDOM from 'react-dom/client'
+import App from './App'
 
-import { createApp } from "vue"
-import App from "./App.vue"
-
-const app = createApp(App)
-app.mount("#app")
+const root = ReactDOM.createRoot(document.getElementById('app'))
+root.render(
+	<React.StrictMode>
+		<App />
+	</React.StrictMode>
+)
