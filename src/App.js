@@ -1,7 +1,8 @@
 import React from 'react'
 import MapView from './components/MapView'
+import { MapProvider } from 'react-map-gl'
 
-export default function App() {
+export default function App () {
 	return (
 		<>
 			<header>
@@ -28,7 +29,9 @@ export default function App() {
 				</nav>
 			</header>
 			<main id="main">
-				<MapView />
+				<MapProvider>
+					<MapView />
+				</ MapProvider>
 			</main>
 			<footer className="footer mt-auto py-3 bg-light">
 				<p className="text-center text-muted mb-0">
