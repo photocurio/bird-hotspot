@@ -31,7 +31,7 @@ export default function App () {
 			<main id="main">
 				<MapProvider>
 					<MapView />
-				</ MapProvider>
+				</MapProvider>
 			</main>
 			<footer className="footer mt-auto py-3 bg-light">
 				<p className="text-center text-muted mb-0">
