@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import defaultLocations from '../data/defaultLocations'
 import stateCodes from '../data/state-codes'
 import Map, { Layer, Source, NavigationControl, useMap, Marker } from 'react-map-gl'
-import { uniq, difference } from 'underscore'
+import { uniq, difference } from 'lodash'
 import 'mapbox-gl/dist/mapbox-gl.css'
 
 const mapboxApiKey = 'pk.eyJ1IjoicGhvdG9jdXJpbyIsImEiOiJja3FqeDF5M2UwNHZ4MnZydXB2dXcyMzFoIn0.pwFXFrly8A-FTseV_kBlVg'
@@ -74,22 +74,18 @@ export default function MapView () {
 	// 2) when the map move event fires.
 	useEffect( () => {
 		if ( !birdMap ) return
-		birdMap.on( 'sourcedata', async e => {
+		birdMap.on( 'sourcedata', e => {
 			if ( e.sourceId !== 'countySource' || !e.isSourceLoaded || !e.hasOwnProperty( 'tile' ) ) return
-
-			await redrawHotspots()
-			// set loading to false
+			redrawHotspots()
 		} )
-		birdMap.on( 'move', async () => {
-			await redrawHotspots()
+		birdMap.on( 'move', () => {
+			redrawHotspots()
 		} )
 	}, [birdMap] )
 
 	async function redrawHotspots () {
 		const countiesPresent = getCounties()
-
 		const countiesToRemove = difference( Object.keys( markers ), countiesPresent )
-
 		const countiesToAdd = difference( countiesPresent, Object.keys( markers ) )
 
 		if ( countiesToRemove.length ) {
@@ -111,10 +107,7 @@ export default function MapView () {
 	// Hotspots are saved to state in an array, keyed to the county code.
 	// All saved hotspots are applied to the map.
 	async function getHotspots ( countyCode ) {
-		if ( markers.hasOwnProperty( countyCode ) ) {
-			console.log( 'duplicate', countyCode )
-			return
-		}
+		if ( markers.hasOwnProperty( countyCode ) ) return
 		const countyThreeDigit = countyCode.slice( -3 )
 		const stateTwoDigit = countyCode.slice( 0, 2 )
 		const stateTwoChar = stateCodes[stateTwoDigit]
@@ -125,24 +118,21 @@ export default function MapView () {
 		} else {
 			const hotspots = await res.json()
 			if ( hotspots.length ) {
-				const markersCopy = markers
-				markersCopy[countyCode] = hotspots
-				setMarkers( markersCopy )
+				markers[countyCode] = hotspots
+				setMarkers( { ...markers } )
 			}
 		}
 	}
 
 	// Remove unneeded hotspots. This removed hotspots one county at a time.
 	// Remove sets of hotspots that are in counties longer present on the map.
-	function removeHotspots ( county ) {
-		if ( !markers.hasOwnProperty( [county] ) ) return
-
-		const markersCopy = markers
-		delete markersCopy[county]
-		setMarkers( markersCopy )
+	function removeHotspots ( countyCode ) {
+		if ( !markers.hasOwnProperty( countyCode ) ) return
+		delete markers[countyCode]
+		setMarkers( { ...markers } )
 	}
 
-	// Get an array of 5 digit county FIPS codes, and add to state. 
+	// Return an array of 5 digit county FIPS codes. 
 	// These are the counties that are present on the visible portion of the map.
 	function getCounties () {
 		const countiesPresent = birdMap.queryRenderedFeatures( {
@@ -154,7 +144,7 @@ export default function MapView () {
 
 		// Remove duplicates and return the counties.
 		const uniqCounties = uniq( countyCodes )
-		return uniqCounties
+		return uniqCounties.sort()
 	}
 
 	// Early return if viewState is falsey.
@@ -166,14 +156,15 @@ export default function MapView () {
 			id="birdMap"
 			mapboxAccessToken={ mapboxApiKey }
 			mapStyle="mapbox://styles/mapbox/outdoors-v11"
-			onMove={ evt => setViewState( evt.viewState ) }
+			onMove={ e => setViewState( e.viewState ) }
 		>
 			<NavigationControl />
 			{ Object.values( markers ).map( county => {
 				return county.map( m => {
-					return <Marker longitude={ m.geometry.coordinates[0] }
+					return <Marker key={ m['properties']['locId'] }
+						longitude={ m.geometry.coordinates[0] }
 						latitude={ m.geometry.coordinates[1] }
-						key={ m['properties']['locId'] } />
+					/>
 				} )
 			} ) }
 			<Source type="vector" url="mapbox://mapbox.82pkq93d" id="countySource">
