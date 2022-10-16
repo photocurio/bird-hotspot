@@ -164,7 +164,7 @@ export default function MapView () {
 					return <Marker key={ m['properties']['locId'] }
 						longitude={ m.geometry.coordinates[0] }
 						latitude={ m.geometry.coordinates[1] }
-					/>
+					><></></Marker>
 				} )
 			} ) }
 			<Source type="vector" url="mapbox://mapbox.82pkq93d" id="countySource">
