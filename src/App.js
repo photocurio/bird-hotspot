@@ -15,17 +15,18 @@ export default function App () {
 								>
 							</li>
 						</ul>
+						<form className="d-flex flex-grow-1 flex-sm-grow-0" role="search">
+							<input
+								className="form-control me-2"
+								type="search"
+								size="30"
+								placeholder="town or city, state"
+								aria-label="Search"
+								name="query"
+							/>
+							<button className="btn btn-outline-light" type="submit">Go</button>
+						</form>
 					</div>
-					<form className="d-flex" role="search">
-						<input
-							className="form-control me-2"
-							type="search"
-							placeholder="town or city, state"
-							aria-label="Search"
-							name="query"
-						/>
-						<button className="btn btn-outline-light" type="submit">Go</button>
-					</form>
 				</nav>
 			</header>
 			<main id="main">
@@ -33,7 +34,7 @@ export default function App () {
 					<MapView />
 				</MapProvider>
 			</main>
-			<footer className="footer mt-auto py-3 bg-light">
+			<footer className="footer mt-auto py-3 px-2 bg-light">
 				<p className="text-center text-muted mb-0">
 					Made by <a href="https://petermumford.net/">Peter Mumford</a> with data from <a
 						href="https://ebird.org/home">ebird</a>. Flying bird icon by <a

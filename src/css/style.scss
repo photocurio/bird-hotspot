@@ -1,4 +1,6 @@
+$spacer: 1rem;
 $font-family-sans-serif: 'Poppins', sans-serif;
+
 
 @import "~bootstrap/scss/bootstrap";
 
@@ -7,6 +9,10 @@ $font-family-sans-serif: 'Poppins', sans-serif;
 @import 'aside';
 
 @import 'about';
+
+ul.navbar-nav {
+	padding-right: $spacer;
+}
 
 main {
 	flex: 1;
