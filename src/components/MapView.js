@@ -1,28 +1,10 @@
 import React, { useState, useEffect } from 'react'
-import defaultLocations from '../data/defaultLocations'
 import stateCodes from '../data/state-codes'
 import Map, { Layer, Source, NavigationControl, useMap, Marker } from 'react-map-gl'
 import { uniq, difference } from 'lodash'
 import 'mapbox-gl/dist/mapbox-gl.css'
 
 const mapboxApiKey = 'pk.eyJ1IjoicGhvdG9jdXJpbyIsImEiOiJja3FqeDF5M2UwNHZ4MnZydXB2dXcyMzFoIn0.pwFXFrly8A-FTseV_kBlVg'
-
-function getCoords () {
-	return new Promise( ( resolve, reject ) => {
-		navigator.geolocation.getCurrentPosition(
-			pos => resolve( {
-				longitude: pos.coords.longitude,
-				latitude: pos.coords.latitude,
-				zoom: 9.5
-			} ),
-			err => reject( err )
-		)
-	} )
-}
-
-// Random interger between 0 and 9.
-// Used to pick one of ten default locations.
-const int = Math.floor( Math.random() * 10 )
 
 // Style definition for transparent county boundary layer.
 const countyLayer = {
@@ -36,38 +18,11 @@ const countyLayer = {
 	}
 }
 
-export default function MapView () {
-
-	// Initialize viewState (map center position and zoom value) as null.
-	// If viewState is null, the map will not render.
-	const [viewState, setViewState] = useState( null )
+export default function MapView ( { viewState, setViewState } ) {
 	const [markers, setMarkers] = useState( {} )
 
 	// Make a reference to the Map, so we can call map methods.
 	const { birdMap } = useMap()
-
-	// Get position fires just once, on load.
-	useEffect( () => {
-		getPosition()
-	}, [] )
-
-	// Gets initial position from the browser. 
-	// This function is called in a useEffect.
-	// Uses a default position if the browser does not have permission.
-	async function getPosition () {
-		try {
-			const coords = await getCoords()
-			setViewState( coords )
-		}
-		catch ( err ) {
-			console.log( err.message )
-			setViewState( {
-				longitude: defaultLocations[int][0],
-				latitude: defaultLocations[int][1],
-				zoom: 9.5
-			} )
-		}
-	}
 
 	// Redraws the hotspots:
 	// 1) when the county boundary map is loaded
@@ -78,7 +33,7 @@ export default function MapView () {
 			if ( e.sourceId !== 'countySource' || !e.isSourceLoaded || !e.hasOwnProperty( 'tile' ) ) return
 			redrawHotspots()
 		} )
-		birdMap.on( 'move', () => {
+		birdMap.on( 'moveEnd', ( e ) => {
 			redrawHotspots()
 		} )
 	}, [birdMap] )
