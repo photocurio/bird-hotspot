@@ -24,14 +24,14 @@ function getCoords () {
 // Used to pick one of ten default locations.
 const int = Math.floor( Math.random() * 10 )
 
-// Style definition for transparent county boundaries.
+// Style definition for transparent county boundary layer.
 const countyLayer = {
 	id: 'countyLayer',
 	type: 'fill',
 	source: 'countySource',
 	'source-layer': 'original',
 	paint: {
-		'fill-outline-color': 'rgba(0,0,0,0.5)',
+		'fill-outline-color': 'rgba(0,0,0,0)',
 		'fill-color': 'rgba(0,0,0,0)'
 	}
 }
@@ -46,7 +46,7 @@ export default function MapView () {
 	// Make a reference to the Map, so we can call map methods.
 	const { birdMap } = useMap()
 
-
+	// Get position fires just once, on load.
 	useEffect( () => {
 		getPosition()
 	}, [] )
@@ -69,7 +69,7 @@ export default function MapView () {
 		}
 	}
 
-	// Redraws the hotspots 
+	// Redraws the hotspots:
 	// 1) when the county boundary map is loaded
 	// 2) when the map move event fires.
 	useEffect( () => {
@@ -83,6 +83,9 @@ export default function MapView () {
 		} )
 	}, [birdMap] )
 
+	// Gets and array of all counties visible on the map. If some counties are no longer present 
+	// that had been there, delete markers those counties' markers.
+	// If new counties are present, fetch the markers in those counties, and add them to state.
 	async function redrawHotspots () {
 		const countiesPresent = getCounties()
 		const countiesToRemove = difference( Object.keys( markers ), countiesPresent )
@@ -104,14 +107,17 @@ export default function MapView () {
 	}
 
 	// Gets the birding hotspots for a county from eBird. Uses a serverless function.
-	// Hotspots are saved to state in an array, keyed to the county code.
-	// All saved hotspots are applied to the map.
+	// Hotspots are saved to state in an array in the markers object, keyed to the county code.
 	async function getHotspots ( countyCode ) {
 		if ( markers.hasOwnProperty( countyCode ) ) return
+
+		// convert the countyCode to an eBird regionCode 
 		const countyThreeDigit = countyCode.slice( -3 )
 		const stateTwoDigit = countyCode.slice( 0, 2 )
 		const stateTwoChar = stateCodes[stateTwoDigit]
 		const regionCode = `US-${stateTwoChar}-${countyThreeDigit}`
+
+		// fetch the hotspots for the region. These regions will all be counties.
 		const res = await fetch( `/.netlify/functions/hotspots?regioncode=${regionCode}&back=7` )
 		if ( !res.ok ) {
 			console.log( `Error: ${res.status}, ${res.statusText}` )
@@ -124,8 +130,7 @@ export default function MapView () {
 		}
 	}
 
-	// Remove unneeded hotspots. This removed hotspots one county at a time.
-	// Remove sets of hotspots that are in counties longer present on the map.
+	// Remove a countyCode and all hotspots it contains
 	function removeHotspots ( countyCode ) {
 		if ( !markers.hasOwnProperty( countyCode ) ) return
 		delete markers[countyCode]
@@ -159,6 +164,7 @@ export default function MapView () {
 			onMove={ e => setViewState( e.viewState ) }
 		>
 			<NavigationControl />
+
 			{ Object.values( markers ).map( county => {
 				return county.map( m => {
 					return <Marker key={ m['properties']['locId'] }
@@ -167,6 +173,7 @@ export default function MapView () {
 					><></></Marker>
 				} )
 			} ) }
+
 			<Source type="vector" url="mapbox://mapbox.82pkq93d" id="countySource">
 				<Layer { ...countyLayer } />
 			</Source>
