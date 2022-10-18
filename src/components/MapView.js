@@ -116,7 +116,9 @@ export default function MapView ( { viewState, setViewState } ) {
 			id="birdMap"
 			mapboxAccessToken={ mapboxApiKey }
 			mapStyle="mapbox://styles/mapbox/outdoors-v11"
-			onMove={ e => setViewState( e.viewState ) }
+			onMove={ e => {
+				setViewState( e.viewState )
+			} }
 		>
 			<NavigationControl />
 

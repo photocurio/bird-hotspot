@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import MapView from './components/MapView'
+import SearchForm from './components/SearchForm'
 import { MapProvider } from 'react-map-gl'
 import defaultLocations from './data/defaultLocations'
 
@@ -60,17 +61,7 @@ export default function App () {
 								>
 							</li>
 						</ul>
-						<form className="d-flex flex-grow-1 flex-sm-grow-0" role="search">
-							<input
-								className="form-control me-2"
-								type="search"
-								size="30"
-								placeholder="town or city, state"
-								aria-label="Search"
-								name="query"
-							/>
-							<button className="btn btn-outline-light" type="submit">Go</button>
-						</form>
+						<SearchForm setViewState={ setViewState } />
 					</div>
 				</nav>
 			</header>
