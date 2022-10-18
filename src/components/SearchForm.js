@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { isEmpty } from 'lodash'
 
 function SearchForm ( { setViewState } ) {
 	const [query, setQuery] = useState( '' )
@@ -8,8 +9,14 @@ function SearchForm ( { setViewState } ) {
 
 	async function submitGeocoding () {
 		if ( !query ) return
+		const errorString = `Could not get location: ${query}`
+
 		const res = await fetch( `/.netlify/functions/geocoding/?q=${query}` )
+		if ( !res.ok ) return console.log( errorString )
+
 		const json = await res.json()
+		if ( !json.hasOwnProperty( 'address' ) ) return console.log( errorString )
+
 		const coords = {
 			longitude: json.address.lng,
 			latitude: json.address.lat,
@@ -31,14 +38,10 @@ function SearchForm ( { setViewState } ) {
 				type="search"
 				size="30"
 				placeholder="town or city, state"
-				aria-label="Search"
+				aria-label="Go to location"
 				name="query"
-				onChange={ e => {
-					setQuery( e.target.value )
-				} }
-				onBlur={ e => {
-					setQuery( e.target.value )
-				} }
+				onChange={ e => setQuery( e.target.value ) }
+				onBlur={ e => setQuery( e.target.value ) }
 			/>
 			<button className="btn btn-outline-light" type="submit">Go</button>
 		</form>
