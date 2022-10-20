@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 
-export default function DetailView ( { hotspot, height } ) {
+export default function DetailView ( { hotspot, height, setSelectedMarker } ) {
 	if ( !hotspot ) return
 
 	const [hotspotDetail, setHotspotDetail] = useState( [] )
@@ -10,6 +10,7 @@ export default function DetailView ( { hotspot, height } ) {
 	}, [hotspot] )
 
 	async function getObservations () {
+		if ( !hotspot.hasOwnProperty( 'locId' ) ) return setHotspotDetail( [] )
 		const res = await fetch( `/.netlify/functions/observations/?locationCode=${hotspot.locId}&back=7` )
 		const json = await res.json()
 		setHotspotDetail( json )
@@ -17,7 +18,7 @@ export default function DetailView ( { hotspot, height } ) {
 
 	return (
 		<aside style={ { height: `${height}px` } }>
-			<button className="close-info">
+			<button className="close-info" onClick={ () => setSelectedMarker( {} ) }>
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
 					width="24"
@@ -38,7 +39,7 @@ export default function DetailView ( { hotspot, height } ) {
 				'No observations recorded in the past 7 days.'
 			}
 			<ul className="obs" >
-				{ hotspotDetail.length && hotspotDetail.map( hs => {
+				{ hotspotDetail.map( hs => {
 					return <li key={ hs.speciesCode }>{ hs.comName }, { hs.howMany ? hs.howMany : 1 }</li>
 				} ) }
 			</ul>

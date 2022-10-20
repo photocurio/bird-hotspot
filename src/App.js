@@ -76,7 +76,11 @@ export default function App () {
 						setSelectedMarker={ setSelectedMarker }
 					/>
 				</MapProvider>
-				<DetailView hotspot={ selectedMarker } height="333" />
+				<DetailView
+					hotspot={ selectedMarker }
+					height="333"
+					setSelectedMarker={ setSelectedMarker }
+				/>
 			</main>
 			<footer className="footer mt-auto py-3 px-2 bg-light">
 				<p className="text-center text-muted mb-0">
