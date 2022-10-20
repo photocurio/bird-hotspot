@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import stateCodes from '../data/state-codes'
 import Map, { Layer, Source, NavigationControl, useMap, Marker } from 'react-map-gl'
 import { uniq, difference } from 'lodash'

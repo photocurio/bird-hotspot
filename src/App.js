@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import MapView from './components/MapView'
 import SearchForm from './components/SearchForm'
 import DetailView from './components/DetailView'
