@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import { isEmpty } from 'lodash'
 
 function SearchForm ( { setViewState } ) {
 	const [query, setQuery] = useState( '' )

@@ -17,8 +17,7 @@ const countyLayer = {
 		'fill-color': 'rgba(0,0,0,0)'
 	}
 }
-
-export default function MapView ( { viewState, setViewState } ) {
+export default function MapView ( { viewState, setViewState, selectedMarker, setSelectedMarker } ) {
 	const [markers, setMarkers] = useState( {} )
 
 	// Make a reference to the Map, so we can call map methods.
@@ -109,7 +108,6 @@ export default function MapView ( { viewState, setViewState } ) {
 
 	// Early return if viewState is falsey.
 	if ( !viewState ) return
-
 	else return (
 		<Map
 			{ ...viewState }
@@ -124,9 +122,16 @@ export default function MapView ( { viewState, setViewState } ) {
 
 			{ Object.values( markers ).map( county => {
 				return county.map( m => {
-					return <Marker key={ m['properties']['locId'] }
+					return <Marker key={ m.properties.locId }
 						longitude={ m.geometry.coordinates[0] }
 						latitude={ m.geometry.coordinates[1] }
+						onClick={ () => setSelectedMarker( m.properties ) }
+						style={ {
+							backgroundColor: m.properties.locId === selectedMarker.locId ? 'red' : '',
+							borderWidth: m.properties.locId === selectedMarker.locId ? '2px' : '',
+							width: m.properties.locId === selectedMarker.locId ? '1.55rem' : '',
+							height: m.properties.locId === selectedMarker.locId ? '1.55rem' : ''
+						} }
 					><></></Marker>
 				} )
 			} ) }

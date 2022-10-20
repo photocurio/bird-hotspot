@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import MapView from './components/MapView'
 import SearchForm from './components/SearchForm'
+import DetailView from './components/DetailView'
 import { MapProvider } from 'react-map-gl'
 import defaultLocations from './data/defaultLocations'
 
@@ -25,6 +26,7 @@ export default function App () {
 	// Initialize viewState (map center position and zoom value) as null.
 	// If viewState is null, the map will not render.
 	const [viewState, setViewState] = useState( null )
+	const [selectedMarker, setSelectedMarker] = useState( {} )
 
 	// Get position fires just once, on load.
 	useEffect( () => {
@@ -67,14 +69,20 @@ export default function App () {
 			</header>
 			<main id="main">
 				<MapProvider>
-					<MapView viewState={ viewState } setViewState={ setViewState } />
+					<MapView
+						viewState={ viewState }
+						setViewState={ setViewState }
+						selectedMarker={ selectedMarker }
+						setSelectedMarker={ setSelectedMarker }
+					/>
 				</MapProvider>
+				<DetailView hotspot={ selectedMarker } height="333" />
 			</main>
 			<footer className="footer mt-auto py-3 px-2 bg-light">
 				<p className="text-center text-muted mb-0">
-					Made by <a href="https://petermumford.net/">Peter Mumford</a> with data from <a
-						href="https://ebird.org/home">ebird</a>. Flying bird icon by <a
-							href="https://www.fredsprinkle.com/">Fred Sprinkle</a>.
+					Made by <a href="https://petermumford.net/">Peter Mumford</a> with
+					data from <a href="https://ebird.org/home">ebird</a>. Flying bird icon
+					by <a href="https://www.fredsprinkle.com/">Fred Sprinkle</a>.
 				</p>
 			</footer>
 		</>
