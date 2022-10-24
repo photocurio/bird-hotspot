@@ -4,7 +4,7 @@ import Map, { Layer, Source, NavigationControl, useMap, Marker } from 'react-map
 import { uniq, difference } from 'lodash'
 import 'mapbox-gl/dist/mapbox-gl.css'
 
-const mapboxApiKey = 'pk.eyJ1IjoicGhvdG9jdXJpbyIsImEiOiJja3FqeDF5M2UwNHZ4MnZydXB2dXcyMzFoIn0.pwFXFrly8A-FTseV_kBlVg'
+const mapboxApiKey = process.env.MAPBOX_TOKEN
 
 // Style definition for transparent county boundary layer.
 const countyLayer = {
