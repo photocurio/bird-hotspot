@@ -1,10 +1,10 @@
-const { URL } = require('url')
-const fetch = require('node-fetch')
+const { URL } = require( 'url' )
+const fetch = require( 'node-fetch' )
 
-exports.handler = async (event) => {
+exports.handler = async ( event ) => {
 
 	const { regioncode, back } = event.queryStringParameters
-	if (!regioncode) return {
+	if ( !regioncode ) return {
 		statusCode: 400,
 		body: 'this request requires an ebird region code'
 	}
@@ -24,30 +24,30 @@ exports.handler = async (event) => {
 		)
 		const jsonRes = await cachedRes.json()
 
-		if (jsonRes.result) {
-			const parsedRes = JSON.parse(jsonRes.result)
+		if ( jsonRes.result ) {
+			const parsedRes = JSON.parse( jsonRes.result )
 			return {
 				statusCode: 200,
-				body: JSON.stringify(parsedRes)
+				body: JSON.stringify( parsedRes )
 			}
 		} else {
-			const ebirdApi = new URL(`https://api.ebird.org/v2/ref/hotspot/${regioncode}`)
-			ebirdApi.searchParams.set('fmt', 'json')
-			ebirdApi.searchParams.set('back', back)
+			const ebirdApi = new URL( `https://api.ebird.org/v2/ref/hotspot/${regioncode}` )
+			ebirdApi.searchParams.set( 'fmt', 'json' )
+			ebirdApi.searchParams.set( 'back', back )
 			// @ts-ignore
-			const hotspots = await fetch(ebirdApi, { method: 'GET', redirect: 'follow' })
-				.then(response => {
-					if (response.status === 200) return response.json()
+			const hotspots = await fetch( ebirdApi, { method: 'GET', redirect: 'follow' } )
+				.then( response => {
+					if ( response.status === 200 ) return response.json()
 					else return {
 						responseType: 'error',
 						statusCode: response.status,
 						body: response.statusText
 					}
-				})
+				} )
 				// reformat response to geoJson for Mapbox
-				.then(data => {
-					if (data.responseType === 'error') return data
-					const geoJson = data.map(spot => {
+				.then( data => {
+					if ( data.responseType === 'error' ) return data
+					const geoJson = data.map( spot => {
 						return {
 							geometry: {
 								type: 'Point',
@@ -65,14 +65,14 @@ exports.handler = async (event) => {
 								subnational2Code: spot.subnational2Code
 							}
 						}
-					})
+					} )
 					return geoJson
-				})
-				.catch(error => {
+				} )
+				.catch( error => {
 					return error
-				})
+				} )
 
-			const hotspotString = JSON.stringify(hotspots)
+			const hotspotString = JSON.stringify( hotspots )
 			// @ts-ignore
 			await fetch(
 				`${process.env.UPSTASH_REDIS_REST_URL}/set/${requestName}/?EX=85400`,
@@ -91,7 +91,7 @@ exports.handler = async (event) => {
 			}
 		}
 	}
-	catch (err) {
+	catch ( err ) {
 		return {
 			statusCode: 500,
 			body: 'Something went wrong while fetching the hotspots.'
