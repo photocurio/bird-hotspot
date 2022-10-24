@@ -11,14 +11,16 @@ function SearchForm ( { setViewState } ) {
 		const errorString = `Could not get location: ${query}`
 
 		const res = await fetch( `/.netlify/functions/geocoding/?q=${query}` )
-		if ( !res.ok ) return console.log( errorString )
-
+		if ( !res.ok ) {
+			return console.log( errorString )
+		}
 		const json = await res.json()
-		if ( !json.hasOwnProperty( 'address' ) ) return console.log( errorString )
+
+		if ( !json.hasOwnProperty( 'features' ) || json.features.length === 0 ) return console.log( errorString )
 
 		const coords = {
-			longitude: json.address.lng,
-			latitude: json.address.lat,
+			longitude: json.features[0]['center'][0],
+			latitude: json.features[0]['center'][1],
 			zoom: 9.5
 		}
 		setViewState( coords )
