@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 
-function SearchForm ( { setViewState } ) {
+function SearchForm ( { setViewState, mapLoaded } ) {
 	const [query, setQuery] = useState( '' )
 	useEffect( () => {
 		submitGeocoding()
@@ -25,7 +25,8 @@ function SearchForm ( { setViewState } ) {
 		}
 		setViewState( coords )
 	}
-	return (
+	if ( !mapLoaded ) return
+	else return (
 		<form
 			className="d-flex flex-grow-1 flex-sm-grow-0"
 			role="search"

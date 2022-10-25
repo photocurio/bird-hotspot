@@ -17,7 +17,7 @@ const countyLayer = {
 		'fill-color': 'rgba(0,0,0,0)'
 	}
 }
-export default function MapView ( { viewState, setViewState, selectedMarker, setSelectedMarker } ) {
+export default function MapView ( { viewState, setViewState, selectedMarker, setSelectedMarker, setMapLoaded } ) {
 	const [markers, setMarkers] = useState( {} )
 
 	// Make a reference to the Map, so we can call map methods.
@@ -117,6 +117,7 @@ export default function MapView ( { viewState, setViewState, selectedMarker, set
 			onMove={ e => {
 				setViewState( e.viewState )
 			} }
+			onLoad={ e => setMapLoaded( true ) }
 		>
 			<NavigationControl />
 

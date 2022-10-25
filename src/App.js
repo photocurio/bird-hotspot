@@ -31,6 +31,7 @@ export default function App () {
 	const [showDetail, setShowDetail] = useState( false )
 	const [observations, setObservations] = useState( [] )
 	const [mapHeight, setMapHeight] = useState( 0 )
+	const [mapLoaded, setMapLoaded] = useState( false )
 
 	// This null ref (?) is for the DetailView transition
 	const nodeRef = useRef( null )
@@ -90,7 +91,7 @@ export default function App () {
 								>
 							</li>
 						</ul>
-						<SearchForm setViewState={ setViewState } />
+						<SearchForm setViewState={ setViewState } mapLoaded={ mapLoaded } />
 					</div>
 				</nav>
 			</header>
@@ -101,6 +102,7 @@ export default function App () {
 						setViewState={ setViewState }
 						selectedMarker={ selectedMarker }
 						setSelectedMarker={ setSelectedMarker }
+						setMapLoaded={ setMapLoaded }
 					/>
 				</MapProvider>
 				<Transition
