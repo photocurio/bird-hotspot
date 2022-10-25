@@ -1,24 +1,10 @@
-import { useEffect, useState } from 'react'
+import { forwardRef } from 'react'
 
-export default function DetailView ( { hotspot, height, setSelectedMarker } ) {
-	if ( !hotspot ) return
-
-	const [hotspotDetail, setHotspotDetail] = useState( [] )
-
-	useEffect( () => {
-		getObservations()
-	}, [hotspot] )
-
-	async function getObservations () {
-		if ( !hotspot.hasOwnProperty( 'locId' ) ) return setHotspotDetail( [] )
-		const res = await fetch( `/.netlify/functions/observations/?locationCode=${hotspot.locId}&back=7` )
-		const json = await res.json()
-		setHotspotDetail( json )
-	}
-
+const DetailView = forwardRef( ( props, ref ) => {
+	const { selectedMarker, height, setShowDetail, observations, className } = props
 	return (
-		<aside style={ { height: `${height}px` } }>
-			<button className="close-info" onClick={ () => setSelectedMarker( {} ) }>
+		<aside style={ { height: height } } className={ className } ref={ ref } >
+			<button className="close-info" onClick={ () => setShowDetail( false ) }>
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
 					width="24"
@@ -33,16 +19,18 @@ export default function DetailView ( { hotspot, height, setSelectedMarker } ) {
 					/>
 				</svg>
 			</button>
-			<h5>{ hotspot.locName }</h5>
-			{ hotspotDetail.length ?
+			<h5>{ selectedMarker.locName }</h5>
+			{ observations.length ?
 				'Observations, past 7 days:' :
 				'No observations recorded in the past 7 days.'
 			}
-			<ul className="obs" >
-				{ hotspotDetail.map( hs => {
+			<ul className={ 'obs' } >
+				{ observations.map( hs => {
 					return <li key={ hs.speciesCode }>{ hs.comName }, { hs.howMany ? hs.howMany : 1 }</li>
 				} ) }
 			</ul>
 		</aside >
 	)
-}
+} )
+
+export default DetailView

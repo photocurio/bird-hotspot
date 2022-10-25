@@ -1,9 +1,10 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import MapView from './components/MapView'
 import SearchForm from './components/SearchForm'
 import DetailView from './components/DetailView'
 import { MapProvider } from 'react-map-gl'
 import defaultLocations from './data/defaultLocations'
+import { Transition } from 'react-transition-group'
 
 function getCoords () {
 	return new Promise( ( resolve, reject ) => {
@@ -27,11 +28,36 @@ export default function App () {
 	// If viewState is null, the map will not render.
 	const [viewState, setViewState] = useState( null )
 	const [selectedMarker, setSelectedMarker] = useState( {} )
+	const [showDetail, setShowDetail] = useState( false )
+	const [observations, setObservations] = useState( [] )
+	const [mapHeight, setMapHeight] = useState( 0 )
 
-	// Get position fires just once, on load.
+	// This null ref (?) is for the DetailView transition
+	const nodeRef = useRef( null )
+
 	useEffect( () => {
+		getObservations()
+	}, [selectedMarker] )
+
+	useEffect( () => {
+		setHeight()
 		getPosition()
+		window.addEventListener( 'resize', setHeight, false )
 	}, [] )
+
+	function setHeight () {
+		const main = document.getElementById( 'main' )
+		if ( main ) return setMapHeight( main.offsetHeight )
+		else return null
+	}
+	async function getObservations () {
+		setObservations( [] )
+		if ( !selectedMarker.hasOwnProperty( 'locId' ) ) return
+		const res = await fetch( `/.netlify/functions/observations/?locationCode=${selectedMarker.locId}&back=7` )
+		const json = await res.json()
+		setObservations( json )
+		return setShowDetail( true )
+	}
 
 	// Gets initial position from the browser. 
 	// This function is called in a useEffect.
@@ -76,11 +102,25 @@ export default function App () {
 						setSelectedMarker={ setSelectedMarker }
 					/>
 				</MapProvider>
-				<DetailView
-					hotspot={ selectedMarker }
-					height="333"
-					setSelectedMarker={ setSelectedMarker }
-				/>
+				<Transition
+					nodeRef={ nodeRef }
+					in={ showDetail }
+					timeout={ 500 } // should match transtion duration
+					addEndListener={ () => {
+						setSelectedMarker( {} )
+					} }
+				>
+					{ state => (
+						<DetailView
+							ref={ nodeRef }
+							height={ mapHeight }
+							className={ `slide slide-${state}` }
+							selectedMarker={ selectedMarker }
+							observations={ observations }
+							setShowDetail={ setShowDetail }
+						/>
+					) }
+				</Transition>
 			</main>
 			<footer className="footer mt-auto py-3 px-2 bg-light">
 				<p className="text-center text-muted mb-0">
