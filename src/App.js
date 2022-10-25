@@ -37,7 +37,7 @@ export default function App () {
 
 	useEffect( () => {
 		getObservations()
-	}, [selectedMarker] )
+	}, [selectedMarker.locId] )
 
 	useEffect( () => {
 		setHeight()
@@ -55,6 +55,7 @@ export default function App () {
 		if ( !selectedMarker.hasOwnProperty( 'locId' ) ) return
 		const res = await fetch( `/.netlify/functions/observations/?locationCode=${selectedMarker.locId}&back=7` )
 		const json = await res.json()
+
 		setObservations( json )
 		return setShowDetail( true )
 	}
