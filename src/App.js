@@ -4,6 +4,7 @@ import SearchForm from './components/SearchForm'
 import DetailView from './components/DetailView'
 import { MapProvider } from 'react-map-gl'
 import defaultLocations from './data/defaultLocations'
+import flyingBird from './images/bird-flying.gif'
 
 function getCoords () {
 	return new Promise( ( resolve, reject ) => {
@@ -95,6 +96,11 @@ export default function App () {
 				</nav>
 			</header>
 			<main id="main">
+				<img
+					src={ flyingBird }
+					alt="bird flying"
+					className={ mapLoaded ? 'bird-flying loaded' : 'bird-flying' }
+				/>
 				<MapProvider>
 					<MapView
 						viewState={ viewState }

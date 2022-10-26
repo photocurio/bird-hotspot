@@ -120,7 +120,6 @@ export default function MapView ( { viewState, setViewState, selectedMarker, set
 			onLoad={ e => setMapLoaded( true ) }
 		>
 			<NavigationControl />
-
 			{ Object.values( markers ).map( county => {
 				return county.map( m => {
 					return <Marker key={ m.properties.locId }
@@ -136,7 +135,6 @@ export default function MapView ( { viewState, setViewState, selectedMarker, set
 					><></></Marker>
 				} )
 			} ) }
-
 			<Source type="vector" url="mapbox://mapbox.82pkq93d" id="countySource">
 				<Layer { ...countyLayer } />
 			</Source>

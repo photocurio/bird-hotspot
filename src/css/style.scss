@@ -1,10 +1,7 @@
 $spacer: 1rem;
 $font-family-sans-serif: 'Poppins', sans-serif;
 
-
 @import "~bootstrap/scss/bootstrap";
-
-@import 'transitions';
 
 @import 'aside';
 
@@ -61,20 +58,20 @@ main {
 	}
 }
 
-.loading {
-	height: 100%;
-	z-index: 12;
+.bird-flying {
+	top: 50%;
+	left: 50%;
+	margin-left: -80px;
+	position: absolute;
+	z-index: 14;
+	margin-top: -60px;
+	width: 160px;
+	height: 120px;
 	mix-blend-mode: multiply;
-	transition: all 1s ease;
-	img {
-		top: 50%;
-		left: 50%;
-		margin-left: -80px;
-		position: absolute;
-		z-index: 14;
-		margin-top: -60px;
-		width: 160px;
-		height: 120px;
+	transition: opacity 1000ms ease, visibility 0ms ease 1000ms;
+	&.loaded {
+		opacity: 0;
+		visibility: hidden;
 	}
 }
 

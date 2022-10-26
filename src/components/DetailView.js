@@ -1,8 +1,9 @@
-import { animated, useSpring } from '@react-spring/web'
+import { animated, useSpring, config } from '@react-spring/web'
 
 const DetailView = ( props ) => {
 	const { selectedMarker, showDetail, setShowDetail, observations, noObservations } = props
 	const detailStyles = useSpring( {
+		config: { ...config.default },
 		left: showDetail ? window.innerWidth - 300 : window.innerWidth
 	} )
 	return (
