@@ -20,12 +20,12 @@ export default function Modal ( { openModal, setOpenModal } ) {
 			</button>
 			<h3>About Bird Hotspot</h3>
 			<p>
-				This site answers the question
+				This site answers the question: <br />
 				<em>&ldquo;What birds have been seen in the past 7 days at my favorite hotspots?&rdquo;</em>
 			</p>
 			<p>
-				To navigate to a town or city, enter your location and a state, in the search form:
-				<code>Missoula, MT</code>. It only works in the United States.
+				To navigate to a town or city, enter a location and state in the search
+				form: <code>Missoula, MT</code>. It only works in the United States.
 			</p>
 		</div >
 	)
