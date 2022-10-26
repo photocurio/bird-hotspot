@@ -1,6 +1,6 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import stateCodes from '../data/state-codes'
-import Map, { Layer, Source, NavigationControl, useMap, Marker } from 'react-map-gl'
+import Map, { Layer, Source, NavigationControl, Marker } from 'react-map-gl'
 import { uniq, difference } from 'lodash'
 import 'mapbox-gl/dist/mapbox-gl.css'
 
@@ -23,13 +23,16 @@ export default function MapView ( props ) {
 
 	// Make a reference to the Map, so we can call map methods.
 	// Used for map.queryRenderedFeatures
-	const { birdMap } = useMap()
+	const birdMap = useRef( null )
 
-	// Gets and array of all counties visible on the map. If some counties are no longer present 
-	// that had been there, delete markers those counties' markers.
+	// Gets an array of all counties visible on the map. If some counties are no longer present 
+	// that had been there, delete those counties and thier markers.
 	// If new counties are present, fetch the markers in those counties, and add them to state.
 	async function redrawHotspots () {
 		const countiesPresent = getCounties()
+		if ( countiesPresent.length > 20 ) {
+			return alert( 'Unable to fetch all the birding hotspots. Try zooming in.' )
+		}
 		const countiesToRemove = difference( Object.keys( markers ), countiesPresent )
 		const countiesToAdd = difference( countiesPresent, Object.keys( markers ) )
 
@@ -82,7 +85,7 @@ export default function MapView ( props ) {
 	// Return an array of 5 digit county FIPS codes. 
 	// These are the counties that are present on the visible portion of the map.
 	function getCounties () {
-		const countiesPresent = birdMap.queryRenderedFeatures( {
+		const countiesPresent = birdMap.current.queryRenderedFeatures( {
 			layers: ['countyLayer']
 		} )
 
@@ -99,9 +102,10 @@ export default function MapView ( props ) {
 	else return (
 		<Map
 			{ ...viewState }
-			id="birdMap"
+			ref={ birdMap }
 			mapboxAccessToken={ mapboxApiKey }
 			mapStyle="mapbox://styles/mapbox/outdoors-v11"
+			onLoad={ () => setMapLoaded( true ) }
 			onSourceData={ async e => {
 				if ( e.sourceId !== 'countySource' || !e.isSourceLoaded || !e.hasOwnProperty( 'tile' ) ) return
 				await redrawHotspots()
@@ -110,7 +114,6 @@ export default function MapView ( props ) {
 				await setViewState( e.viewState )
 				await redrawHotspots()
 			} }
-			onLoad={ e => setMapLoaded( true ) }
 		>
 			<NavigationControl />
 			{ Object.values( markers ).map( county => {

@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react'
-import { MapProvider } from 'react-map-gl'
 import MapView from './components/MapView'
 import SearchForm from './components/SearchForm'
 import DetailView from './components/DetailView'
@@ -109,16 +108,14 @@ export default function App () {
 					alt="bird flying"
 					className={ mapLoaded ? 'bird-flying loaded' : 'bird-flying' }
 				/>
-				<MapProvider>
-					<MapView
-						viewState={ viewState }
-						setViewState={ setViewState }
-						selectedMarker={ selectedMarker }
-						setSelectedMarker={ setSelectedMarker }
-						setMapLoaded={ setMapLoaded }
-						openModal={ openModal }
-					/>
-				</MapProvider>
+				<MapView
+					viewState={ viewState }
+					setViewState={ setViewState }
+					selectedMarker={ selectedMarker }
+					setSelectedMarker={ setSelectedMarker }
+					setMapLoaded={ setMapLoaded }
+					openModal={ openModal }
+				/>
 				<DetailView
 					showDetail={ showDetail }
 					selectedMarker={ selectedMarker }
