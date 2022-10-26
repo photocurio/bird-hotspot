@@ -1,7 +1,4 @@
-import { useEffect, useState } from 'react'
-
 export default function Modal ( { openModal, setOpenModal } ) {
-
 	return (
 		<div className={ openModal ? "about-info open" : "about-info" }>
 			<button className="close-icon" onClick={ () => setOpenModal( false ) }>
