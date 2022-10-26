@@ -27,6 +27,7 @@ export default function App () {
 	// Initialize viewState (map center position and zoom value) as null.
 	// If viewState is null, the map will not render.
 	const [viewState, setViewState] = useState( null )
+	// if this contains data, the detail tray will slide out
 	const [selectedMarker, setSelectedMarker] = useState( {} )
 	const [showDetail, setShowDetail] = useState( false )
 	const [observations, setObservations] = useState( [] )
@@ -40,6 +41,7 @@ export default function App () {
 		getObservations()
 	}, [selectedMarker.locId] )
 
+	// runs on initialization
 	useEffect( () => {
 		setHeight()
 		getPosition()
@@ -51,6 +53,7 @@ export default function App () {
 		if ( main ) return setMapHeight( main.offsetHeight )
 		else return null
 	}
+
 	async function getObservations () {
 		setObservations( [] )
 		if ( !selectedMarker.hasOwnProperty( 'locId' ) ) return
@@ -58,7 +61,7 @@ export default function App () {
 		const json = await res.json()
 
 		setObservations( json )
-		return setShowDetail( true )
+		setShowDetail( true )
 	}
 
 	// Gets initial position from the browser. 
