@@ -128,10 +128,10 @@ export default function MapView ( { viewState, setViewState, selectedMarker, set
 						latitude={ m.geometry.coordinates[1] }
 						onClick={ () => setSelectedMarker( m.properties ) }
 						style={ {
-							backgroundColor: m.properties.locId === selectedMarker.locId ? 'red' : '',
-							borderWidth: m.properties.locId === selectedMarker.locId ? '2px' : '',
-							width: m.properties.locId === selectedMarker.locId ? '1.55rem' : '',
-							height: m.properties.locId === selectedMarker.locId ? '1.55rem' : ''
+							backgroundColor: m.properties.locId === selectedMarker.locId ? 'MediumOrchid' : '',
+							borderWidth: m.properties.locId === selectedMarker.locId ? '1.5px' : '',
+							width: m.properties.locId === selectedMarker.locId ? '24px' : '',
+							height: m.properties.locId === selectedMarker.locId ? '24px' : ''
 						} }
 					><></></Marker>
 				} )
