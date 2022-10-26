@@ -26,12 +26,17 @@ export default function App () {
 	// Initialize viewState (map center position and zoom value) as null.
 	// If viewState is null, the map will not render.
 	const [viewState, setViewState] = useState( null )
-	// if this contains data, the detail tray will slide out
+
+	// if selectedMarker contains data, the detail tray will slide out
 	const [selectedMarker, setSelectedMarker] = useState( {} )
 	const [showDetail, setShowDetail] = useState( false )
 	const [observations, setObservations] = useState( [] )
-	const [mapHeight, setMapHeight] = useState( 0 )
 	const [mapLoaded, setMapLoaded] = useState( false )
+
+	// runs on initialization
+	useEffect( () => {
+		getPosition()
+	}, [] )
 
 	useEffect( () => {
 		getObservations()
@@ -41,29 +46,6 @@ export default function App () {
 	useEffect( () => {
 		if ( !showDetail ) setSelectedMarker( {} )
 	}, [showDetail] )
-
-	// runs on initialization
-	useEffect( () => {
-		setHeight()
-		getPosition()
-		window.addEventListener( 'resize', setHeight, false )
-	}, [] )
-
-	function setHeight () {
-		const main = document.getElementById( 'main' )
-		if ( main ) return setMapHeight( main.offsetHeight )
-		else return null
-	}
-
-	async function getObservations () {
-		setObservations( [] )
-		if ( !selectedMarker.hasOwnProperty( 'locId' ) ) return
-		const res = await fetch( `/.netlify/functions/observations/?locationCode=${selectedMarker.locId}&back=7` )
-		const json = await res.json()
-
-		setObservations( json )
-		setShowDetail( true )
-	}
 
 	// Gets initial position from the browser. 
 	// This function is called in a useEffect.
@@ -81,6 +63,17 @@ export default function App () {
 				zoom: 9.5
 			} )
 		}
+	}
+
+	async function getObservations () {
+		setObservations( [] )
+		if ( !selectedMarker.hasOwnProperty( 'locId' ) ) return
+		const res = await fetch( `/.netlify/functions/observations/?locationCode=${selectedMarker.locId}&back=7` )
+		if ( !res.ok ) return
+
+		const json = await res.json()
+		setObservations( json )
+		setShowDetail( true )
 	}
 
 	return (
@@ -111,7 +104,6 @@ export default function App () {
 				</MapProvider>
 				<DetailView
 					showDetail={ showDetail }
-					height={ mapHeight }
 					selectedMarker={ selectedMarker }
 					observations={ observations }
 					setShowDetail={ setShowDetail }
