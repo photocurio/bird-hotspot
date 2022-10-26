@@ -86,10 +86,16 @@ export default function App () {
 			<header>
 				<nav className="navbar navbar-expand-md navbar-dark bg-dark">
 					<div className="container-fluid">
-						<a className="navbar-brand" href="" onClick={ () => setOpenModal( false ) }>Bird Hotspot</a>
+						<a className="navbar-brand" href="" onClick={ e => {
+							e.preventDefault()
+							setOpenModal( false )
+						} }>Bird Hotspot</a>
 						<ul className="navbar-nav me-auto">
 							<li className="nav-item">
-								<a className="nav-link" href="" onClick={ () => setOpenModal( true ) }>About</a
+								<a className="nav-link" href="" onClick={ e => {
+									e.preventDefault()
+									setOpenModal( true )
+								} }>About</a
 								>
 							</li>
 						</ul>
