@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react'
+import { MapProvider } from 'react-map-gl'
 import MapView from './components/MapView'
 import SearchForm from './components/SearchForm'
 import DetailView from './components/DetailView'
-import { MapProvider } from 'react-map-gl'
+import AboutModal from './components/AboutModal'
 import defaultLocations from './data/defaultLocations'
 import flyingBird from './images/bird-flying.gif'
 
@@ -34,6 +35,7 @@ export default function App () {
 	const [observations, setObservations] = useState( [] )
 	const [noObservations, setNoObservations] = useState( false )
 	const [mapLoaded, setMapLoaded] = useState( false )
+	const [openModal, setOpenModal] = useState( false )
 
 	// runs on initialization
 	useEffect( () => {
@@ -84,10 +86,10 @@ export default function App () {
 			<header>
 				<nav className="navbar navbar-expand-md navbar-dark bg-dark">
 					<div className="container-fluid">
-						<a className="navbar-brand" href="#">Bird Hotspot</a>
+						<a className="navbar-brand" href="" onClick={ () => setOpenModal( false ) }>Bird Hotspot</a>
 						<ul className="navbar-nav me-auto">
 							<li className="nav-item">
-								<a className="nav-link" href="">About</a
+								<a className="nav-link" href="" onClick={ () => setOpenModal( true ) }>About</a
 								>
 							</li>
 						</ul>
@@ -108,6 +110,7 @@ export default function App () {
 						selectedMarker={ selectedMarker }
 						setSelectedMarker={ setSelectedMarker }
 						setMapLoaded={ setMapLoaded }
+						openModal={ openModal }
 					/>
 				</MapProvider>
 				<DetailView
@@ -125,6 +128,7 @@ export default function App () {
 					by <a href="https://www.fredsprinkle.com/">Fred Sprinkle</a>.
 				</p>
 			</footer>
+			<AboutModal openModal={ openModal } setOpenModal={ setOpenModal } />
 		</>
 	)
 }

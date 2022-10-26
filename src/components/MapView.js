@@ -17,7 +17,8 @@ const countyLayer = {
 		'fill-color': 'rgba(0,0,0,0)'
 	}
 }
-export default function MapView ( { viewState, setViewState, selectedMarker, setSelectedMarker, setMapLoaded } ) {
+export default function MapView ( props ) {
+	const { viewState, setViewState, selectedMarker, setSelectedMarker, setMapLoaded, openModal } = props
 	const [markers, setMarkers] = useState( {} )
 
 	// Make a reference to the Map, so we can call map methods.
@@ -130,7 +131,8 @@ export default function MapView ( { viewState, setViewState, selectedMarker, set
 							backgroundColor: m.properties.locId === selectedMarker.locId ? 'MediumOrchid' : '',
 							borderWidth: m.properties.locId === selectedMarker.locId ? '1.5px' : '',
 							width: m.properties.locId === selectedMarker.locId ? '24px' : '',
-							height: m.properties.locId === selectedMarker.locId ? '24px' : ''
+							height: m.properties.locId === selectedMarker.locId ? '24px' : '',
+							opacity: openModal ? 0 : 1
 						} }
 					><></></Marker>
 				} )
