@@ -2,7 +2,7 @@ import { animated, useSpring } from '@react-spring/web'
 
 
 const DetailView = ( props ) => {
-	const { selectedMarker, height, showDetail, setShowDetail, observations, className } = props
+	const { selectedMarker, height, showDetail, setShowDetail, observations } = props
 	const detailStyles = useSpring( {
 		left: showDetail ? window.innerWidth - 300 : window.innerWidth,
 		height: height
