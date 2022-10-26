@@ -18,13 +18,9 @@ main {
 	flex: 1;
 	display: flex;
 	align-items: stretch;
-}
-
-.map-wrapper {
-	flex-grow: 1;
-	display: flex;
+	overflow: hidden;
 	position: relative;
-	background-color: #efe9e1;
+	width: 100vw;
 }
 
 #map {
@@ -45,19 +41,6 @@ main {
 	@media screen and (min-width: 600px) {
 		width: 14px;
 		height: 14px;
-	}
-	&.hidden {
-		opacity: 0;
-	}
-	&.active {
-		background: tomato;
-		border-width: 2px;
-		width: 1.55rem;
-		height: 1.55rem;
-		@media screen and (min-width: 600px) {
-			width: 1.4rem;
-			height: 1.4rem;
-		}
 	}
 }
 
