@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import stateCodes from '../data/state-codes'
 import Map, { Layer, Source, NavigationControl, useMap, Marker } from 'react-map-gl'
 import { uniq, difference } from 'lodash'
@@ -22,21 +22,8 @@ export default function MapView ( props ) {
 	const [markers, setMarkers] = useState( {} )
 
 	// Make a reference to the Map, so we can call map methods.
+	// Used for map.queryRenderedFeatures
 	const { birdMap } = useMap()
-
-	// Redraws the hotspots:
-	// 1) when the county boundary map is loaded
-	// 2) when the map move event fires.
-	useEffect( () => {
-		if ( !birdMap ) return
-		birdMap.on( 'sourcedata', e => {
-			if ( e.sourceId !== 'countySource' || !e.isSourceLoaded || !e.hasOwnProperty( 'tile' ) ) return
-			redrawHotspots()
-		} )
-		birdMap.on( 'moveEnd', ( e ) => {
-			redrawHotspots()
-		} )
-	}, [birdMap] )
 
 	// Gets and array of all counties visible on the map. If some counties are no longer present 
 	// that had been there, delete markers those counties' markers.
@@ -115,8 +102,13 @@ export default function MapView ( props ) {
 			id="birdMap"
 			mapboxAccessToken={ mapboxApiKey }
 			mapStyle="mapbox://styles/mapbox/outdoors-v11"
-			onMove={ e => {
-				setViewState( e.viewState )
+			onSourceData={ async e => {
+				if ( e.sourceId !== 'countySource' || !e.isSourceLoaded || !e.hasOwnProperty( 'tile' ) ) return
+				await redrawHotspots()
+			} }
+			onMoveEnd={ async e => {
+				await setViewState( e.viewState )
+				await redrawHotspots()
 			} }
 			onLoad={ e => setMapLoaded( true ) }
 		>
