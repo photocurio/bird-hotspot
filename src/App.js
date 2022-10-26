@@ -1,10 +1,9 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import MapView from './components/MapView'
 import SearchForm from './components/SearchForm'
 import DetailView from './components/DetailView'
 import { MapProvider } from 'react-map-gl'
 import defaultLocations from './data/defaultLocations'
-import { Transition } from 'react-transition-group'
 
 function getCoords () {
 	return new Promise( ( resolve, reject ) => {
@@ -34,12 +33,14 @@ export default function App () {
 	const [mapHeight, setMapHeight] = useState( 0 )
 	const [mapLoaded, setMapLoaded] = useState( false )
 
-	// This null ref (?) is for the DetailView transition
-	const nodeRef = useRef( null )
-
 	useEffect( () => {
 		getObservations()
 	}, [selectedMarker.locId] )
+
+	// If tray closes, null the selected marker.
+	useEffect( () => {
+		if ( !showDetail ) setSelectedMarker( {} )
+	}, [showDetail] )
 
 	// runs on initialization
 	useEffect( () => {
@@ -108,25 +109,13 @@ export default function App () {
 						setMapLoaded={ setMapLoaded }
 					/>
 				</MapProvider>
-				<Transition
-					nodeRef={ nodeRef }
-					in={ showDetail }
-					timeout={ 500 } // should match transtion duration
-					addEndListener={ () => {
-						setSelectedMarker( {} )
-					} }
-				>
-					{ state => (
-						<DetailView
-							ref={ nodeRef }
-							height={ mapHeight }
-							className={ `slide slide-${state}` }
-							selectedMarker={ selectedMarker }
-							observations={ observations }
-							setShowDetail={ setShowDetail }
-						/>
-					) }
-				</Transition>
+				<DetailView
+					showDetail={ showDetail }
+					height={ mapHeight }
+					selectedMarker={ selectedMarker }
+					observations={ observations }
+					setShowDetail={ setShowDetail }
+				/>
 			</main>
 			<footer className="footer mt-auto py-3 px-2 bg-light">
 				<p className="text-center text-muted mb-0">

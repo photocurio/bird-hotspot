@@ -1,9 +1,14 @@
-import { forwardRef } from 'react'
+import { animated, useSpring } from '@react-spring/web'
 
-const DetailView = forwardRef( ( props, ref ) => {
-	const { selectedMarker, height, setShowDetail, observations, className } = props
+
+const DetailView = ( props ) => {
+	const { selectedMarker, height, showDetail, setShowDetail, observations, className } = props
+	const detailStyles = useSpring( {
+		left: showDetail ? window.innerWidth - 300 : window.innerWidth,
+		height: height
+	} )
 	return (
-		<aside style={ { height: height } } className={ className } ref={ ref } >
+		<animated.aside style={ detailStyles } >
 			<button className="close-info" onClick={ () => setShowDetail( false ) }>
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
@@ -29,8 +34,8 @@ const DetailView = forwardRef( ( props, ref ) => {
 					return <li key={ hs.speciesCode }>{ hs.comName }, { hs.howMany ? hs.howMany : 1 }</li>
 				} ) }
 			</ul>
-		</aside >
+		</animated.aside >
 	)
-} )
+}
 
 export default DetailView
