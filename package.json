@@ -7,15 +7,19 @@
 	"dependencies": {
 		"@popperjs/core": "^2.11.6",
 		"bootstrap": "^5.2.1",
+		"lodash": "^4.17.21",
 		"mapbox-gl": "^2.10.0",
 		"node-fetch": "^2.6.0",
-		"underscore": "^1.13.6",
-		"vue": "^3.2.39"
+		"react": "^18.2.0",
+		"react-dom": "^18.2.0",
+		"react-map-gl": "^7.0.19",
+		"react-spring": "^9.5.5"
 	},
 	"devDependencies": {
 		"@parcel/transformer-sass": "^2.7.0",
 		"@parcel/transformer-vue": "^2.7.0",
-		"parcel": "^2.7.0"
+		"parcel": "^2.7.0",
+		"process": "^0.11.10"
 	},
 	"scripts": {
 		"dev": "parcel",

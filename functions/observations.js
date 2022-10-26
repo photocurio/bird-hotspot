@@ -1,9 +1,9 @@
-const fetch = require('node-fetch')
-exports.handler = async (event) => {
+const fetch = require( 'node-fetch' )
+exports.handler = async ( event ) => {
 	const { locationCode, back } = event.queryStringParameters
 	const requestName = `observations-${locationCode}`
 	// @ts-ignore
-	const cachedRes = await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/get/${requestName}`,
+	const cachedRes = await fetch( `${process.env.UPSTASH_REDIS_REST_URL}/get/${requestName}`,
 		{
 			method: 'GET',
 			headers: {
@@ -12,13 +12,13 @@ exports.handler = async (event) => {
 			}
 		}
 	)
-		.then(res => res.json())
+		.then( res => res.json() )
 
-	if (cachedRes.result) {
-		const parsedRes = JSON.parse(cachedRes.result)
+	if ( cachedRes.result ) {
+		const parsedRes = JSON.parse( cachedRes.result )
 		return {
 			statusCode: 200,
-			body: JSON.stringify(parsedRes)
+			body: JSON.stringify( parsedRes )
 		}
 	} else {
 		// @ts-ignore
@@ -32,15 +32,15 @@ exports.handler = async (event) => {
 				}
 			}
 		)
-			.then(response => {
+			.then( response => {
 				return response.status === 200 ?
 					response.json() :
 					`error code: ${response.status}`
-			})
-			.catch(error => {
+			} )
+			.catch( error => {
 				return error
-			})
-		const obsString = JSON.stringify(obs)
+			} )
+		const obsString = JSON.stringify( obs )
 		// @ts-ignore
 		await fetch(
 			`${process.env.UPSTASH_REDIS_REST_URL}/set/${requestName}/?EX=85400`,
