@@ -1,7 +1,7 @@
 import { animated, useSpring } from '@react-spring/web'
 
 const DetailView = ( props ) => {
-	const { selectedMarker, showDetail, setShowDetail, observations } = props
+	const { selectedMarker, showDetail, setShowDetail, observations, noObservations } = props
 	const detailStyles = useSpring( {
 		left: showDetail ? window.innerWidth - 300 : window.innerWidth
 	} )
@@ -23,15 +23,16 @@ const DetailView = ( props ) => {
 				</svg>
 			</button>
 			<h5>{ selectedMarker.locName }</h5>
-			{ observations.length ?
-				'Observations, past 7 days:' :
-				'No observations recorded in the past 7 days.'
+			{ noObservations ?
+				<div>No observations recorded in the past 7 days.</div> :
+				<div>Observations, past 7 days:
+					<ul className='obs' >
+						{ observations?.map( hs => {
+							return <li key={ hs.speciesCode }>{ hs.comName }, { hs.howMany ? hs.howMany : 1 }</li>
+						} ) }
+					</ul>
+				</div>
 			}
-			<ul className={ 'obs' } >
-				{ observations.map( hs => {
-					return <li key={ hs.speciesCode }>{ hs.comName }, { hs.howMany ? hs.howMany : 1 }</li>
-				} ) }
-			</ul>
 		</animated.aside >
 	)
 }

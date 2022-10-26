@@ -31,6 +31,7 @@ export default function App () {
 	const [selectedMarker, setSelectedMarker] = useState( {} )
 	const [showDetail, setShowDetail] = useState( false )
 	const [observations, setObservations] = useState( [] )
+	const [noObservations, setNoObservations] = useState( false )
 	const [mapLoaded, setMapLoaded] = useState( false )
 
 	// runs on initialization
@@ -69,10 +70,11 @@ export default function App () {
 		setObservations( [] )
 		if ( !selectedMarker.hasOwnProperty( 'locId' ) ) return
 		const res = await fetch( `/.netlify/functions/observations/?locationCode=${selectedMarker.locId}&back=7` )
-		if ( !res.ok ) return
-
+		if ( !res.ok ) return setNoObservations( true )
 		const json = await res.json()
 		setObservations( json )
+		if ( !json.length ) setNoObservations( true )
+		else setNoObservations( false )
 		setShowDetail( true )
 	}
 
@@ -107,6 +109,7 @@ export default function App () {
 					selectedMarker={ selectedMarker }
 					observations={ observations }
 					setShowDetail={ setShowDetail }
+					noObservations={ noObservations }
 				/>
 			</main>
 			<footer className="footer mt-auto py-3 px-2 bg-light">
