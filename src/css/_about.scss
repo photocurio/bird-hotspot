@@ -1,6 +1,6 @@
 $mobile: 50px;
 $desktop: 100px;
-
+ 
 .about-info {
 	background-color: white;
 	overflow-y: scroll;
@@ -10,8 +10,15 @@ $desktop: 100px;
 	max-width: 800px;
 	margin: 0 2rem;
 	padding: 1rem;
-	z-index: 12;
+	z-index: 13;
 	text-align: center;
+	opacity: 0;
+	visibility: hidden;
+	transition: all 1000ms ease-out;
+	&.open {
+		opacity: 1;
+		visibility: visible;
+	}
 	@media screen and (min-width: 600px) {
 		left: 50%;
 		transform: translateY(-51%) translateX(-50%);

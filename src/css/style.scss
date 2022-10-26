@@ -63,12 +63,12 @@ main {
 	left: 50%;
 	margin-left: -80px;
 	position: absolute;
-	z-index: 14;
+	z-index: 12;
 	margin-top: -60px;
 	width: 160px;
 	height: 120px;
 	mix-blend-mode: multiply;
-	transition: opacity 1000ms ease, visibility 0ms ease 1000ms;
+	transition: opacity 1000ms ease-out, visibility 0ms ease 1000ms;
 	&.loaded {
 		opacity: 0;
 		visibility: hidden;
@@ -79,4 +79,8 @@ main {
 	float: right;
 	background: none;
 	border: 0;
+}
+
+.mapboxgl-marker {
+	transition: opacity 500ms ease-out
 }
