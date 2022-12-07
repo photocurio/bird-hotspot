@@ -1,5 +1,41 @@
-import { useState, useRef } from 'react'
+import { selectedMarkerType, viewType } from '../types'
+
 type StateLookup = { [key: string]: string }
+
+type MapViewProps = {
+	viewState: viewType,
+	setViewState: (viewState: viewType) => void,
+	selectedMarker: selectedMarkerType,
+	setSelectedMarker: (selectedMarker: selectedMarkerType) => void,
+	setMapLoaded: (mapLoaded: boolean) => void,
+	openModal: boolean
+}
+
+type MarkerType = {
+	[key: string]: {
+		geometry: {
+			type: "Point",
+			coordinates: [number, number]
+		},
+		type: 'Feature',
+		properties: {
+			locId: string,
+			locName: string,
+			countryCode: string,
+			subnational1Code: string,
+			subnational2Code: string
+		}
+
+	}[]
+}
+
+import { useState, useRef } from 'react'
+import Map, { Layer, Source, NavigationControl, Marker, MapRef, LayerProps } from 'react-map-gl'
+import { uniq, difference } from 'lodash'
+import 'mapbox-gl/dist/mapbox-gl.css'
+
+const mapboxApiKey = process.env.MAPBOX_TOKEN
+
 const stateCodes: StateLookup = {
 	'01': 'AL',
 	'02': 'AK',
@@ -58,11 +94,6 @@ const stateCodes: StateLookup = {
 	'72': 'PR',
 	'78': 'VI'
 }
-import Map, { Layer, Source, NavigationControl, Marker, MapRef, LayerProps } from 'react-map-gl'
-import { uniq, difference } from 'lodash'
-import 'mapbox-gl/dist/mapbox-gl.css'
-
-const mapboxApiKey = process.env.MAPBOX_TOKEN
 
 // Style definition for transparent county boundary layer.
 const countyLayer: LayerProps = {
@@ -76,20 +107,12 @@ const countyLayer: LayerProps = {
 	}
 }
 
-type mapViewProps = {
-	viewState: { longitude: number, latitude: number, zoom: number },
-	setViewState: (viewState: { longitude: number, latitude: number, zoom: number }) => void,
-	selectedMarker: { locId: string },
-	setSelectedMarker: (selectedMarker: { locId: string }) => void,
-	setMapLoaded: (mapLoaded: boolean) => void,
-	openModal: boolean
-}
 
-export default function MapView(props: mapViewProps) {
+export default function MapView(props: MapViewProps) {
 	const { viewState, setViewState, selectedMarker, setSelectedMarker, setMapLoaded, openModal } = props
 
 	// TODO type this!!!
-	const [markers, setMarkers] = useState({})
+	const [markers, setMarkers] = useState<MarkerType>({})
 
 	// Make a reference to the Map, so we can call map methods.
 	// Used for map.queryRenderedFeatures
@@ -171,7 +194,8 @@ export default function MapView(props: mapViewProps) {
 	}
 
 	// Early return if viewState is falsey.
-	if (!viewState) return
+	if (!viewState) return <div></div>
+
 	else return (
 		<Map
 			{...viewState}
@@ -196,10 +220,10 @@ export default function MapView(props: mapViewProps) {
 						latitude={m.geometry.coordinates[1]}
 						onClick={() => setSelectedMarker(m.properties)}
 						style={{
+							// The Marker component does not support the className attribute
+							// So, we have to do this inline styles stuff.
 							backgroundColor: m.properties.locId === selectedMarker.locId ? 'MediumOrchid' : '',
 							borderWidth: m.properties.locId === selectedMarker.locId ? '1.5px' : '',
-							width: m.properties.locId === selectedMarker.locId ? '24px' : '',
-							height: m.properties.locId === selectedMarker.locId ? '24px' : '',
 							opacity: openModal ? 0 : 1
 						}}
 					><></></Marker>

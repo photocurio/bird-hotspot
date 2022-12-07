@@ -1,12 +1,12 @@
-import { useState, useEffect } from 'react'
-
 type searchFormProps = {
 	setViewState: (viewState: { longitude: number, latitude: number, zoom: number }) => void,
 	mapLoaded: boolean
 }
 
+import { useState, useEffect } from 'react'
+
 function SearchForm({ setViewState, mapLoaded }: searchFormProps) {
-	const [query, setQuery] = useState('')
+	const [query, setQuery] = useState<string>('')
 
 	useEffect(() => {
 		submitGeocoding()
@@ -35,8 +35,9 @@ function SearchForm({ setViewState, mapLoaded }: searchFormProps) {
 		setViewState(coords)
 	}
 
-	if (!mapLoaded) return
-
+	if (!mapLoaded) return (
+		<span>&nbsp;</span>
+	)
 	else return (
 		<form
 			className="d-flex flex-grow-1 flex-sm-grow-0"

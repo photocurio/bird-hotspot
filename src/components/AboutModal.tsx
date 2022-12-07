@@ -1,13 +1,17 @@
 type modalProps = {
 	openModal: boolean,
-	setOpenModal: (openModal: boolean) => void
+	setOpenModal: (showDetail: boolean) => void,
 }
 
-const Modal = ({ openModal, setOpenModal }: modalProps) => {
+import times from '../images/times.svg'
+
+
+const Modal = (props: modalProps) => {
+	const { openModal, setOpenModal } = props
 	return (
 		<div className={openModal ? "about-info open" : "about-info"} >
 			<button className="close-icon" onClick={() => setOpenModal(false)}
-			><img src="../images/chevron-right.svg" alt="close hotspot details"
+			><img src={times} alt="close hotspot details"
 				/></button>
 			<h3>About Bird Hotspot</h3>
 			<p>This site answers the question: <br />

@@ -1,12 +1,14 @@
-import { animated, useSpring, config } from '@react-spring/web'
+import { selectedMarkerType, observationsType } from '../types'
 
 type detailProps = {
-	selectedMarker: { locName: string },
+	selectedMarker: selectedMarkerType,
 	showDetail: boolean,
 	setShowDetail: (showDetail: boolean) => void,
-	observations: { speciesCode: string, comName: string, howMany: number }[],
+	observations: observationsType[],
 	noObservations: boolean
 }
+
+import { animated, useSpring, config } from '@react-spring/web'
 
 const DetailView = (props: detailProps) => {
 	const { selectedMarker, showDetail, setShowDetail, observations, noObservations } = props
@@ -31,14 +33,14 @@ const DetailView = (props: detailProps) => {
 					/>
 				</svg>
 			</button>
-			<h5>{selectedMarker.locName}</h5>
+			{selectedMarker && <h5>{selectedMarker.locName}</h5>}
 			{noObservations ?
 				<div>No observations recorded in the past 7 days.</div> :
 				<div>Observations, past 7 days:
 					<ul className='obs' >
-						{observations?.map(hs => {
-							return <li key={hs.speciesCode}>{hs.comName}, {hs.howMany ? hs.howMany : 1}</li>
-						})}
+						{observations.length && observations.map(
+							hotspot => <li key={hotspot.speciesCode}>{hotspot.comName}, {hotspot.howMany ? hotspot.howMany : 1}</li>
+						)}
 					</ul>
 				</div>
 			}

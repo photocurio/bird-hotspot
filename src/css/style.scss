@@ -31,14 +31,14 @@ main {
 
 .mapboxgl-marker {
 	background: hotpink;
-	width: 19px;
-	height: 19px;
+	width: 22px;
+	height: 22px;
 	border: 1px solid white;
 	border-radius: 50%;
 	cursor: pointer;
 	@media screen and (min-width: 600px) {
-		width: 14px;
-		height: 14px;
+		width: 16px;
+		height: 16px;
 	}
 }
 
