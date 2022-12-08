@@ -6,7 +6,7 @@ type searchFormProps = {
 import { useState, useEffect } from 'react'
 
 function SearchForm({ setViewState, mapLoaded }: searchFormProps) {
-	const [query, setQuery] = useState<string>('')
+	const [query, setQuery] = useState('')
 
 	useEffect(() => {
 		submitGeocoding()
@@ -40,7 +40,7 @@ function SearchForm({ setViewState, mapLoaded }: searchFormProps) {
 	)
 	else return (
 		<form
-			className="d-flex flex-grow-1 flex-sm-grow-0"
+			className="input-group flex-grow-1 flex-sm-grow-0"
 			role="search"
 			onSubmit={e => {
 				e.preventDefault()
@@ -48,7 +48,7 @@ function SearchForm({ setViewState, mapLoaded }: searchFormProps) {
 			}}
 		>
 			<input
-				className="form-control me-2"
+				className="form-control"
 				type="search"
 				size={30}
 				placeholder="town or city, state"
@@ -57,7 +57,7 @@ function SearchForm({ setViewState, mapLoaded }: searchFormProps) {
 				onChange={e => setQuery(e.target.value)}
 				onBlur={e => setQuery(e.target.value)}
 			/>
-			<button className="btn btn-outline-light" type="submit">Go</button>
+			<button className="btn btn-light" type="submit">Go</button>
 		</form>
 	)
 }

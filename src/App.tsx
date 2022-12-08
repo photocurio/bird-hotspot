@@ -5,7 +5,7 @@ import SearchForm from './components/SearchForm'
 import DetailView from './components/DetailView'
 import AboutModal from './components/AboutModal'
 import defaultLocations from './data/defaultLocations'
-import flyingBird from './images/bird-flying.gif'
+import flyingBird from './images/flying-bird.gif'
 
 function getCoords(): Promise<viewType> {
 	return new Promise((resolve, reject) => {
@@ -27,11 +27,11 @@ export default function App() {
 
 	// if selectedMarker contains data, the detail tray will slide out.
 	const [selectedMarker, setSelectedMarker] = useState<selectedMarkerType>({ locId: '', locName: '' })
-	const [showDetail, setShowDetail] = useState<boolean>(false)
+	const [showDetail, setShowDetail] = useState(false)
 	const [observations, setObservations] = useState<observationsType[]>([])
-	const [noObservations, setNoObservations] = useState<boolean>(false)
-	const [mapLoaded, setMapLoaded] = useState<boolean>(false)
-	const [openModal, setOpenModal] = useState<boolean>(false)
+	const [noObservations, setNoObservations] = useState(false)
+	const [mapLoaded, setMapLoaded] = useState(false)
+	const [openModal, setOpenModal] = useState(false)
 
 	// Get initial position.
 	useEffect(() => {

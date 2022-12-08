@@ -1,16 +1,21 @@
 $spacer: 1rem;
 $font-family-sans-serif: 'Poppins', sans-serif;
 
+// @import "variables-darkly";
 @import "~bootstrap/scss/bootstrap";
-
-@import 'aside';
-
-@import 'about';
+// @import "bootswatch";
+@import "aside";
+@import "about";
 
 ul.navbar-nav {
 	padding-right: $spacer;
 }
 
+.navbar {
+	.input-group {
+		width: auto;
+	}
+}
 main {
 	flex: 1;
 	display: flex;
@@ -65,9 +70,9 @@ main {
 	margin-left: -80px;
 	position: absolute;
 	z-index: 12;
-	margin-top: -60px;
-	width: 160px;
-	height: 120px;
+	margin-top: -100px;
+	width: 123px;
+	height: 177px;
 	mix-blend-mode: multiply;
 	transition: opacity 1000ms ease-out, visibility 0ms ease 1000ms;
 	&.loaded {
