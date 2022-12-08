@@ -14,7 +14,7 @@ type MapViewProps = {
 type MarkerType = {
 	[key: string]: {
 		geometry: {
-			type: "Point",
+			type: 'Point',
 			coordinates: [number, number]
 		},
 		type: 'Feature',
@@ -203,10 +203,14 @@ export default function MapView(props: MapViewProps) {
 			mapboxAccessToken={mapboxApiKey}
 			mapStyle="mapbox://styles/mapbox/outdoors-v11"
 			onLoad={() => setMapLoaded(true)}
+			// Handler for the sourceData event.
 			onSourceData={async e => {
+				// This condition filters out the wrong events.
 				if (e.sourceId !== 'countySource' || !e.isSourceLoaded || !e.hasOwnProperty('tile')) return
+				// Draw the hotspots when the countySource is loaded and has a title.
 				await redrawHotspots()
 			}}
+			// Handler for moving the map.
 			onMoveEnd={async e => {
 				await setViewState(e.viewState)
 				await redrawHotspots()
@@ -219,11 +223,13 @@ export default function MapView(props: MapViewProps) {
 						longitude={m.geometry.coordinates[0]}
 						latitude={m.geometry.coordinates[1]}
 						onClick={() => setSelectedMarker(m.properties)}
+						// The Marker component does not supprt className.
+						// So we have to use all these inline styles.
 						style={{
-							// The Marker component does not support the className attribute
-							// So, we have to do this inline styles stuff.
 							backgroundColor: m.properties.locId === selectedMarker.locId ? 'MediumOrchid' : '',
-							borderWidth: m.properties.locId === selectedMarker.locId ? '1.5px' : '',
+							borderWidth: m.properties.locId === selectedMarker.locId ? '2px' : '',
+							width: m.properties.locId === selectedMarker.locId ? '22px' : '',
+							height: m.properties.locId === selectedMarker.locId ? '22px' : '',
 							opacity: openModal ? 0 : 1
 						}}
 					><></></Marker>
