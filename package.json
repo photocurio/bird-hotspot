@@ -3,7 +3,6 @@
 	"version": "1.0.0",
 	"description": "",
 	"source": "src/index.html",
-	"types": "dist/index.d.ts",
 	"browserslist": "> 0.5%, last 2 versions, not dead",
 	"dependencies": {
 		"@popperjs/core": "^2.11.6",
