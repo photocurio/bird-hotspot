@@ -43,14 +43,18 @@ export default function App() {
 		getObservations()
 	}, [selectedMarker.locId])
 
-	// If tray closes, the selected marker is set to empty strings.
+	/* 
+	 * If tray closes, the selected marker is set to empty strings.
+	 */
 	useEffect(() => {
 		if (!showDetail) setSelectedMarker({ locId: '', locName: '' })
 	}, [showDetail])
 
-	// Gets initial position from the browser. 
-	// This function is called in a useEffect.
-	// Uses a default position if the browser does not have permission.
+	/* 
+	 * Gets initial position from the browser. 
+	 * This function is called in a useEffect.
+	 * Uses a default position if the browser does not have permission.
+	*/
 	async function getPosition() {
 		try {
 			const coords = await getCoords()
