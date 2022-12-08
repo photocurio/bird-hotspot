@@ -1,6 +1,8 @@
+import { Dispatch, SetStateAction } from 'react'
+
 type modalProps = {
 	openModal: boolean,
-	setOpenModal: (showDetail: boolean) => void,
+	setOpenModal: Dispatch<SetStateAction<boolean>>,
 }
 
 import times from '../images/times.svg'

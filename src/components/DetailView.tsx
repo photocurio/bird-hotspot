@@ -1,9 +1,10 @@
+import { Dispatch, SetStateAction } from 'react'
 import { selectedMarkerType, observationsType } from '../types'
 
 type detailProps = {
 	selectedMarker: selectedMarkerType,
 	showDetail: boolean,
-	setShowDetail: (showDetail: boolean) => void,
+	setShowDetail: Dispatch<SetStateAction<boolean>>,
 	observations: observationsType[],
 	noObservations: boolean
 }

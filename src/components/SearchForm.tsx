@@ -1,5 +1,7 @@
+import { Dispatch, SetStateAction } from 'react'
+import { viewType } from '../types'
 type searchFormProps = {
-	setViewState: (viewState: { longitude: number, latitude: number, zoom: number }) => void,
+	setViewState: Dispatch<SetStateAction<viewType>>,
 	mapLoaded: boolean
 }
 

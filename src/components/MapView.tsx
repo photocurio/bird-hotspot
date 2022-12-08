@@ -1,13 +1,14 @@
+import { Dispatch, SetStateAction } from 'react'
 import { selectedMarkerType, viewType } from '../types'
 
 type StateLookup = { [key: string]: string }
 
 type MapViewProps = {
 	viewState: viewType,
-	setViewState: (viewState: viewType) => void,
+	setViewState: Dispatch<SetStateAction<viewType>>,
 	selectedMarker: selectedMarkerType,
-	setSelectedMarker: (selectedMarker: selectedMarkerType) => void,
-	setMapLoaded: (mapLoaded: boolean) => void,
+	setSelectedMarker: Dispatch<SetStateAction<selectedMarkerType>>,
+	setMapLoaded: Dispatch<SetStateAction<boolean>>,
 	openModal: boolean
 }
 
