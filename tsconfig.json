@@ -5,6 +5,7 @@
 		"alwaysStrict": true,
 		"esModuleInterop": true,
 		"forceConsistentCasingInFileNames": true,
+		"isolatedModules": true,
 		"jsx": "react-jsx",
 		"lib": [
 			"dom",
