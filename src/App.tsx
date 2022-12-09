@@ -130,6 +130,9 @@ export default function App() {
 					openModal={openModal}
 				/>
 				<DetailView
+					/*
+					 * The detail tray that slides in when a hotspot is selected.
+					 */
 					showDetail={showDetail}
 					selectedMarker={selectedMarker}
 					observations={observations}
