@@ -1,7 +1,6 @@
 const fetch = require( 'node-fetch' )
 const { URL } = require( 'url' )
 
-
 exports.handler = async ( event ) => {
 	const { q } = event.queryStringParameters
 
@@ -30,8 +29,6 @@ exports.handler = async ( event ) => {
 	geocodeApi.searchParams.set( 'language', 'en' )
 	geocodeApi.searchParams.set( 'access_token', mapboxApiKey )
 
-
-	// @ts-ignore
 	const res = await fetch( geocodeApi, { method: 'GET', redirect: 'follow' } )
 	if ( res.status === 200 ) {
 		const resJson = await res.json()

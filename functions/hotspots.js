@@ -34,7 +34,7 @@ exports.handler = async ( event ) => {
 			const ebirdApi = new URL( `https://api.ebird.org/v2/ref/hotspot/${regioncode}` )
 			ebirdApi.searchParams.set( 'fmt', 'json' )
 			ebirdApi.searchParams.set( 'back', back )
-			// @ts-ignore
+
 			const hotspots = await fetch( ebirdApi, { method: 'GET', redirect: 'follow' } )
 				.then( response => {
 					if ( response.status === 200 ) return response.json()
@@ -44,6 +44,7 @@ exports.handler = async ( event ) => {
 						body: response.statusText
 					}
 				} )
+
 				// reformat response to geoJson for Mapbox
 				.then( data => {
 					if ( data.responseType === 'error' ) return data
@@ -73,7 +74,7 @@ exports.handler = async ( event ) => {
 				} )
 
 			const hotspotString = JSON.stringify( hotspots )
-			// @ts-ignore
+
 			await fetch(
 				`${process.env.UPSTASH_REDIS_REST_URL}/set/${requestName}/?EX=85400`,
 				{
