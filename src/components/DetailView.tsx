@@ -15,7 +15,7 @@ const DetailView = (props: detailProps) => {
 	const { selectedMarker, showDetail, setShowDetail, observations, noObservations } = props
 	if (!showDetail) return <div></div>
 	return (
-		<div>
+		<aside className='detail-tray'>
 			<button className="close-info" onClick={() => setShowDetail(false)}>
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
@@ -42,7 +42,7 @@ const DetailView = (props: detailProps) => {
 					</ul>
 				</div>
 			}
-		</div>
+		</aside>
 	)
 }
 

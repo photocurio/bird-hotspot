@@ -43,7 +43,7 @@ function SearchForm({ setViewState, mapLoaded }: searchFormProps) {
 
 	else return (
 		<form
-			className="input-group flex-grow-1 flex-sm-grow-0"
+			className="search-form input-group flex-grow-1 flex-sm-grow-0"
 			role="search"
 			onSubmit={e => {
 				e.preventDefault()
@@ -60,7 +60,7 @@ function SearchForm({ setViewState, mapLoaded }: searchFormProps) {
 				onChange={e => setQuery(e.target.value)}
 				onBlur={e => setQuery(e.target.value)}
 			/>
-			<button className="btn btn-light" type="submit">Go</button>
+			<button className="btn btn-success" type="submit">Go</button>
 		</form>
 	)
 }

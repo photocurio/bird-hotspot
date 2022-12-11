@@ -1,5 +1,7 @@
 $spacer: 1rem;
 $font-family-sans-serif: 'Poppins', sans-serif;
+$success: SeaGreen;
+$link-color: $success; 
 
 // @import "variables-darkly";
 @import "~bootstrap/scss/bootstrap";
@@ -7,15 +9,22 @@ $font-family-sans-serif: 'Poppins', sans-serif;
 @import "aside";
 @import "about";
 
-ul.navbar-nav {
-	padding-right: $spacer;
-}
-
 .navbar {
-	.input-group {
+	> .container-fluid {
+		justify-content: flex-start;
+		align-items: baseline;
+	}
+	.nav-link {
+		color: MediumSeaGreen;
+		margin-right: $spacer;
+	}
+	form.input-group {
 		width: auto;
+		align-self: stretch;
+		margin-left: auto;
 	}
 }
+
 main {
 	flex: 1;
 	display: flex;
@@ -89,4 +98,13 @@ main {
 
 .mapboxgl-marker {
 	transition: opacity 500ms ease-out
+}
+
+.search-form {
+	.btn-success {
+		color: white;
+		&:hover {
+			color: white;
+		}
+	}
 }

@@ -102,15 +102,11 @@ export default function App() {
 							e.preventDefault()
 							setOpenModal(false)
 						}}>Bird Hotspot</a>
-						<ul className="navbar-nav me-auto">
-							<li className="nav-item">
-								<a className="nav-link" href="" onClick={e => {
-									e.preventDefault()
-									setOpenModal(true)
-								}}>About</a
-								>
-							</li>
-						</ul>
+						<a className="nav-link" href="" onClick={e => {
+							e.preventDefault()
+							setOpenModal(true)
+						}}>About</a
+						>
 						<SearchForm setViewState={setViewState} mapLoaded={mapLoaded} />
 					</div>
 				</nav>
