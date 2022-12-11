@@ -16,30 +16,31 @@ function SearchForm({ setViewState, mapLoaded }: searchFormProps) {
 
 	async function submitGeocoding() {
 		if (!query) return
+
 		const errorString: string = `Could not get location: ${query}`
 
 		const res: Response = await fetch(`/.netlify/functions/geocoding/?q=${query}`)
-		if (!res.ok) {
-			return console.log(errorString)
-		}
+
+		if (!res.ok) return console.error(errorString)
 
 		const json = await res.json()
 
-		if (
-			!json.hasOwnProperty('features') || json.features.length === 0
-		) return console.log(errorString)
+		if (!json.hasOwnProperty('features') ||
+			json.features.length === 0) return console.error(errorString)
 
 		const coords = {
 			longitude: json.features[0]['center'][0],
 			latitude: json.features[0]['center'][1],
 			zoom: 9.5
 		}
+
 		setViewState(coords)
 	}
 
 	if (!mapLoaded) return (
 		<span>&nbsp;</span>
 	)
+
 	else return (
 		<form
 			className="input-group flex-grow-1 flex-sm-grow-0"

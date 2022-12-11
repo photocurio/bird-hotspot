@@ -9,16 +9,13 @@ type detailProps = {
 	noObservations: boolean
 }
 
-import { animated, useSpring, config } from '@react-spring/web'
 
 const DetailView = (props: detailProps) => {
+
 	const { selectedMarker, showDetail, setShowDetail, observations, noObservations } = props
-	const detailStyles = useSpring({
-		config: { ...config.default },
-		left: showDetail ? window.innerWidth - 300 : window.innerWidth
-	})
+	if (!showDetail) return <div></div>
 	return (
-		<animated.aside style={detailStyles} >
+		<div>
 			<button className="close-info" onClick={() => setShowDetail(false)}>
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
@@ -45,7 +42,7 @@ const DetailView = (props: detailProps) => {
 					</ul>
 				</div>
 			}
-		</animated.aside >
+		</div>
 	)
 }
 

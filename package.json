@@ -12,8 +12,7 @@
 		"node-fetch": "^2.6.0",
 		"react": "^18.2.0",
 		"react-dom": "^18.2.0",
-		"react-map-gl": "^7.0.19",
-		"react-spring": "^9.5.5"
+		"react-map-gl": "^7.0.19"
 	},
 	"devDependencies": {
 		"@parcel/transformer-sass": "^2.8.1",
