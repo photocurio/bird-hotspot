@@ -10,12 +10,12 @@ type detailProps = {
 }
 
 
-const DetailView = (props: detailProps) => {
+const Aside = (props: detailProps) => {
 
 	const { selectedMarker, showDetail, setShowDetail, observations, noObservations } = props
-	if (!showDetail) return <div></div>
+
 	return (
-		<aside className='detail-tray'>
+		<aside className={showDetail ? 'aside active' : 'aside'}>
 			<button className="close-info" onClick={() => setShowDetail(false)}>
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
@@ -33,8 +33,8 @@ const DetailView = (props: detailProps) => {
 			</button>
 			{selectedMarker && <h5>{selectedMarker.locName}</h5>}
 			{noObservations ?
-				<div>No observations recorded in the past 7 days.</div> :
-				<div>Observations, past 7 days:
+				<div className='obs-wrapper'>No observations recorded in the past 7 days.</div> :
+				<div className='obs-wrapper'>Observations, past 7 days:
 					<ul className='obs' >
 						{observations.length && observations.map(
 							hotspot => <li key={hotspot.speciesCode}>{hotspot.comName}, {hotspot.howMany ? hotspot.howMany : 1}</li>
@@ -46,4 +46,4 @@ const DetailView = (props: detailProps) => {
 	)
 }
 
-export default DetailView
+export default Aside

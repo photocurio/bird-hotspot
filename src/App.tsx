@@ -2,7 +2,7 @@ import { selectedMarkerType, viewType, observationsType } from './types'
 import { useState, useEffect } from 'react'
 import MapView from './components/MapView'
 import SearchForm from './components/SearchForm'
-import DetailView from './components/DetailView'
+import Aside from './components/Aside'
 import AboutModal from './components/AboutModal'
 import defaultLocations from './data/defaultLocations'
 import flyingBird from './images/flying-bird.gif'
@@ -40,14 +40,21 @@ export default function App() {
 
 	// If the selectedMarker changes, fetch any observations.
 	useEffect(() => {
-		getObservations()
+		if (!selectedMarker.locId) return setShowDetail(false)
+		else {
+			getObservations()
+			setShowDetail(true)
+		}
 	}, [selectedMarker.locId])
 
 	/* 
 	 * If tray closes, the selected marker is set to empty strings.
 	 */
 	useEffect(() => {
-		if (!showDetail) setSelectedMarker({ locId: '', locName: '' })
+		if (!showDetail) {
+			setSelectedMarker({ locId: '', locName: '' })
+			setObservations([])
+		}
 	}, [showDetail])
 
 	/* 
@@ -82,7 +89,7 @@ export default function App() {
 	 * because occaisionally a hotspot can have data but no observations.
 	 */
 	async function getObservations() {
-		setObservations([])
+		// setObservations([])
 		if (!selectedMarker.locId) return
 		const res = await fetch(`/.netlify/functions/observations/?locationCode=${selectedMarker.locId}&back=7`)
 		if (!res.ok) return setNoObservations(true)
@@ -125,7 +132,7 @@ export default function App() {
 					setMapLoaded={setMapLoaded}
 					openModal={openModal}
 				/>
-				<DetailView
+				<Aside
 					/*
 					 * The detail tray that slides in when a hotspot is selected.
 					 */
