@@ -136,8 +136,8 @@ export default function App() {
 					noObservations={noObservations}
 				/>
 			</main>
-			<footer className="footer mt-auto py-3 px-2 bg-light">
-				<p className="text-center text-muted mb-0">
+			<footer className="footer mt-auto py-3 px-2 bg-dark">
+				<p className="text-center text-light mb-0">
 					Made by <a href="https://petermumford.net/">Peter Mumford</a> with
 					data from <a href="https://ebird.org/home">ebird</a>. Flying bird icon
 					by <a href="https://www.fredsprinkle.com/">Fred Sprinkle</a>.

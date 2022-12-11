@@ -16,11 +16,11 @@ const Modal = (props: modalProps) => {
 			><img src={times} alt="close hotspot details"
 				/></button>
 			<h3>About Bird Hotspot</h3>
-			<p>This site answers the question: <br />
-				<em>&ldquo;What birds have been seen in the past 7 days
-					at my favorite hotspots ?&rdquo;</em></p>
+			<p>This site answers the question: </p>
+			<p><em>&ldquo;What birds have been seen in the past 7 days
+				at my favorite hotspots?&rdquo;</em></p>
 			<p>To navigate to a town or city, enter a location and state in the search
-				form: <code>Missoula, MT </code>. It only works in the United States.</p>
+				form: <code>Missoula, MT</code> It only works in the United States.</p>
 		</div>
 	)
 }
