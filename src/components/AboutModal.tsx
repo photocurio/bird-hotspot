@@ -17,10 +17,11 @@ const Modal = (props: modalProps) => {
 				/></button>
 			<h3>About Bird Hotspot</h3>
 			<p>This site answers the question: </p>
-			<p><em>&ldquo;What birds have been seen in the past 7 days
-				at my favorite hotspots?&rdquo;</em></p>
+			<p><em>&ldquo;What birds have been seen at my favorite hotspots in the past 7 days?
+				&rdquo;</em></p>
 			<p>To navigate to a town or city, enter a location and state in the search
-				form: <code>Missoula, MT</code> It only works in the United States.</p>
+				form: <code>Missoula, MT</code>.</p>
+			<p>Bird Hotspot only works in the United States at this time.</p>
 		</div>
 	)
 }
