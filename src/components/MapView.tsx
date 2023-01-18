@@ -31,7 +31,7 @@ type MarkerType = {
 
 import states from '../data/states'
 import { useState, useRef } from 'react'
-import Map, { Layer, Source, NavigationControl, Marker, MapRef, LayerProps } from 'react-map-gl'
+import Map, { Layer, Source, NavigationControl, Marker, MapRef, LayerProps, GeolocateControl } from 'react-map-gl'
 import { uniq, difference } from 'lodash'
 import 'mapbox-gl/dist/mapbox-gl.css'
 
@@ -160,6 +160,11 @@ export default function MapView(props: MapViewProps) {
 			}}
 		>
 			<NavigationControl />
+			<GeolocateControl
+				showUserLocation={false}
+				fitBoundsOptions={{ maxZoom: 9.5 }}
+				showAccuracyCircle={false}
+			/>
 			{Object.values(markers).map(county => {
 				return county.map(m => {
 					return <Marker key={m.properties.locId}

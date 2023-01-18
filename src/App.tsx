@@ -7,18 +7,6 @@ import AboutModal from './components/AboutModal'
 import defaultLocations from './data/defaultLocations'
 import flyingBird from './images/flying-bird.gif'
 
-function getCoords(): Promise<viewType> {
-	return new Promise((resolve, reject) => {
-		navigator.geolocation.getCurrentPosition(
-			position => resolve({
-				longitude: position.coords.longitude,
-				latitude: position.coords.latitude,
-				zoom: 9.5
-			}),
-			error => reject(error)
-		)
-	})
-}
 
 export default function App() {
 	// Initialize viewState (map center position and zoom value) as null.
@@ -35,7 +23,13 @@ export default function App() {
 
 	// Get initial position.
 	useEffect(() => {
-		getPosition()
+		// getPosition()
+		const int = Math.floor(Math.random() * 10)
+		setViewState({
+			longitude: defaultLocations[int][0],
+			latitude: defaultLocations[int][1],
+			zoom: 9.5
+		})
 	}, [])
 
 	// If the selectedMarker changes, fetch any observations.
@@ -57,31 +51,6 @@ export default function App() {
 		}
 	}, [showDetail])
 
-	/* 
-	 * Gets initial position from the browser. 
-	 * This function is called in a useEffect.
-	 * Uses a default position if the browser does not have permission.
-	*/
-	async function getPosition() {
-		try {
-			const coords = await getCoords()
-			setViewState(coords)
-		}
-		// Are errors always typed as any?
-		catch (err: any) {
-			if (err.message) console.log(err.message)
-			else console.log('Could not get the browser geographic position.')
-			// Create random interger.
-			// Used to pick one of ten default locations.
-			// Default zoom is always 9.5
-			const int = Math.floor(Math.random() * 10)
-			setViewState({
-				longitude: defaultLocations[int][0],
-				latitude: defaultLocations[int][1],
-				zoom: 9.5
-			})
-		}
-	}
 
 	/*
 	 * Gets observations for a given hotspot ID.
