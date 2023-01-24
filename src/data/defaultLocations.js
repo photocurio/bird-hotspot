@@ -1,3 +1,6 @@
+/**
+ * One of these ten locations will be the starting position for the map.
+ */
 export default [
 	[-71.4112246, 41.8167968], 	// Providence, RI
 	[-73.442951, 43.8372667], 	// Ticonderoga, NY
