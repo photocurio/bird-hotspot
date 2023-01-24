@@ -13,7 +13,7 @@ function SearchForm({ setViewState, mapLoaded }: searchFormProps) {
 	useEffect(() => {
 		submitGeocoding()
 	}, [])
-
+	// Sends a geocoding request to the backend, which forwards it to Mapbox.
 	async function submitGeocoding() {
 		if (!query) return
 
