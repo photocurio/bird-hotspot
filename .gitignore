@@ -2,3 +2,10 @@ node_modules
 dist
 .netlify
 .parcel-cache
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
+.pnp.*
