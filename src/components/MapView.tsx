@@ -31,7 +31,7 @@ type MarkerType = {
 
 import states from '../data/states'
 import { useState, useRef } from 'react'
-import Map, { Layer, Source, NavigationControl, Marker, MapRef, LayerProps, GeolocateControl } from 'react-map-gl'
+import Map, { Layer, Source, NavigationControl, Marker, MapRef, LayerProps } from 'react-map-gl'
 import { uniq, difference } from 'lodash'
 import 'mapbox-gl/dist/mapbox-gl.css'
 
@@ -78,14 +78,14 @@ export default function MapView(props: MapViewProps) {
 	// Used for map.queryRenderedFeatures
 	const birdMap = useRef<MapRef>(null)
 
-
 	/* 
 	 * Gets user's position from the browser. 
 	*/
-	async function getPosition() {
+	async function goToGeolocation() {
 		try {
 			const coords = await getCoords()
 			setViewState(coords)
+			await redrawHotspots()
 		}
 		// Are errors always typed as any?
 		catch (err: any) {
@@ -153,14 +153,17 @@ export default function MapView(props: MapViewProps) {
 		setMarkers({ ...markers })
 	}
 
-	// Return an array of 5 digit county FIPS codes. 
-	// These are the counties that are present on the visible portion of the map.
+	/* 
+	 * Return an array of 5 digit county FIPS codes. 
+	 * These are the counties that are present on the visible portion of the map.
+	 */
 	function getCounties(): string[] {
 		if (!birdMap.current) return ['map is not loaded']
 		const countiesPresent = birdMap.current.queryRenderedFeatures({
 			// @ts-ignore
 			layers: ['countyLayer']
 		})
+
 		// We only want the FIPS code for each county.
 		const countyCodes = countiesPresent.map(c => {
 			return c.properties ? c.properties.FIPS.toString() : null
@@ -200,7 +203,7 @@ export default function MapView(props: MapViewProps) {
 			<div className="mapboxgl-control-container">
 				<div className="mapboxgl-ctrl-top-right location">
 					<div className="mapboxgl-ctrl mapboxgl-ctrl-group">
-						<button className="mapboxgl-ctrl-geolocate" onClick={getPosition} aria-label="Find my location">
+						<button className="mapboxgl-ctrl-geolocate" onClick={goToGeolocation} aria-label="Find my location">
 							<span className="mapboxgl-ctrl-icon" aria-hidden="true" title="Find my location"></span>
 						</button>
 					</div>
@@ -212,8 +215,7 @@ export default function MapView(props: MapViewProps) {
 						longitude={m.geometry.coordinates[0]}
 						latitude={m.geometry.coordinates[1]}
 						onClick={() => setSelectedMarker(m.properties)}
-						// The Marker component does not supprt className.
-						// So we have to use all these inline styles.
+						// The Marker component does not support className so we have to use these inline styles.
 						style={{
 							backgroundColor: m.properties.locId === selectedMarker.locId ? 'MediumOrchid' : '',
 							borderWidth: m.properties.locId === selectedMarker.locId ? '2px' : '',
