@@ -7,12 +7,27 @@ import AboutModal from './components/AboutModal'
 import defaultLocations from './data/defaultLocations'
 import flyingBird from './images/flying-bird.gif'
 
-export default function App() {
-	// Initialize viewState (map center position and zoom value) as null.
-	// If viewState is null, the map will not render.
-	const [viewState, setViewState] = useState<viewType>(null)
+/*
+ * Get a random location to initialize the map.
+ */
+function randomLocation() {
+	const int = Math.floor(Math.random() * 10)
+	return {
+		longitude: defaultLocations[int][0],
+		latitude: defaultLocations[int][1],
+		zoom: 9.5
+	}
+}
 
-	// if selectedMarker contains data, the detail tray will slide out.
+export default function App() {
+	/* 
+	 * Initialize viewState with a random location.
+	 */
+	const [viewState, setViewState] = useState<viewType>(randomLocation)
+
+	/*
+	 * If selectedMarker contains data, the detail tray will slide out.
+	 */
 	const [selectedMarker, setSelectedMarker] = useState<selectedMarkerType>({ locId: '', locName: '' })
 	const [showDetail, setShowDetail] = useState(false)
 	const [observations, setObservations] = useState<observationsType[]>([])
@@ -20,17 +35,10 @@ export default function App() {
 	const [mapLoaded, setMapLoaded] = useState(false)
 	const [openModal, setOpenModal] = useState(false)
 
-	// Get initial position.
-	useEffect(() => {
-		const int = Math.floor(Math.random() * 10)
-		setViewState({
-			longitude: defaultLocations[int][0],
-			latitude: defaultLocations[int][1],
-			zoom: 9.5
-		})
-	}, [])
 
-	// If the selectedMarker changes, fetch any observations.
+	/*
+	 * If the selectedMarker changes, fetch any observations.
+	 */
 	useEffect(() => {
 		if (!selectedMarker.locId) return setShowDetail(false)
 		else {
@@ -56,7 +64,6 @@ export default function App() {
 	 * because occaisionally a hotspot can have data but no observations.
 	 */
 	async function getObservations() {
-		// setObservations([])
 		if (!selectedMarker.locId) return
 		const res = await fetch(`/.netlify/functions/observations/?locationCode=${selectedMarker.locId}&back=7`)
 		if (!res.ok) return setNoObservations(true)

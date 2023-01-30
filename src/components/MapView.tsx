@@ -38,6 +38,7 @@ import 'mapbox-gl/dist/mapbox-gl.css'
 const mapboxApiKey = process.env.MAPBOX_TOKEN
 
 const stateCodes: StateLookup = states
+
 // Style definition for transparent county boundary layer.
 const countyLayer: LayerProps = {
 	id: 'countyLayer',
@@ -51,6 +52,11 @@ const countyLayer: LayerProps = {
 }
 
 function getCoords(): Promise<viewType> {
+	const options = {
+		enableHighAccuracy: false,
+		timeout: 5000,
+		maximumAge: Infinity
+	}
 	return new Promise((resolve, reject) => {
 		navigator.geolocation.getCurrentPosition(
 			position => resolve({
@@ -58,15 +64,14 @@ function getCoords(): Promise<viewType> {
 				latitude: position.coords.latitude,
 				zoom: 9.5
 			}),
-			error => reject(error)
+			error => reject(error),
+			options
 		)
 	})
 }
 
 export default function MapView(props: MapViewProps) {
 	const { viewState, setViewState, selectedMarker, setSelectedMarker, setMapLoaded, openModal } = props
-
-	// TODO type this!!!
 	const [markers, setMarkers] = useState<MarkerType>({})
 
 	// Make a reference to the Map, so we can call map methods.
@@ -89,9 +94,11 @@ export default function MapView(props: MapViewProps) {
 		}
 	}
 
-	// Gets an array of all counties visible on the map. If some counties are no longer present 
-	// that had been there, delete those counties and thier markers.
-	// If new counties are present, fetch the markers in those counties, and add them to state.
+	/*
+	 * Gets an array of all counties visible on the map. If some counties are no longer present 
+	 * that had been there, delete those counties and thier markers.
+	 * If new counties are present, fetch the markers in those counties, and add them to state.
+	 */
 	async function redrawHotspots() {
 		const countiesPresent: string[] = getCounties()
 		if (countiesPresent.length > 20) {
@@ -164,10 +171,7 @@ export default function MapView(props: MapViewProps) {
 		return uniqCounties.sort()
 	}
 
-	// Early return if viewState is falsey.
-	if (!viewState) return <div></div>
-
-	else return (
+	return (
 		<Map
 			{...viewState}
 			ref={birdMap}
@@ -183,16 +187,16 @@ export default function MapView(props: MapViewProps) {
 			}}
 			// Handler for moving the map.
 			onMoveEnd={async e => {
-				await setViewState(e.viewState)
+				const view = e.viewState
+				setViewState({
+					longitude: view.longitude,
+					latitude: view.latitude,
+					zoom: view.zoom
+				})
 				await redrawHotspots()
 			}}
 		>
 			<NavigationControl />
-			{/* <GeolocateControl
-				showUserLocation={false}
-				fitBoundsOptions={{ maxZoom: 9.5 }}
-				showAccuracyCircle={false}
-			/> */}
 			<div className="mapboxgl-control-container">
 				<div className="mapboxgl-ctrl-top-right location">
 					<div className="mapboxgl-ctrl mapboxgl-ctrl-group">
@@ -202,7 +206,6 @@ export default function MapView(props: MapViewProps) {
 					</div>
 				</div>
 			</div>
-			{/* <button className="position-button">get position</button> */}
 			{Object.values(markers).map(county => {
 				return county.map(m => {
 					return <Marker key={m.properties.locId}

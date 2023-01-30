@@ -7,7 +7,7 @@ export type viewType = {
 	longitude: number,
 	latitude: number,
 	zoom: number
-} | null
+}
 
 export type observationsType = {
 	speciesCode: string,
