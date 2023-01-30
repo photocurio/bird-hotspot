@@ -89,6 +89,9 @@ main {
 		visibility: hidden;
 	}
 }
+.mapboxgl-ctrl-top-right.location {
+	top: 100px;
+}
 
 .close-info {
 	float: right;

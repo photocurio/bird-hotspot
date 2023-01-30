@@ -50,6 +50,18 @@ const countyLayer: LayerProps = {
 	}
 }
 
+function getCoords(): Promise<viewType> {
+	return new Promise((resolve, reject) => {
+		navigator.geolocation.getCurrentPosition(
+			position => resolve({
+				longitude: position.coords.longitude,
+				latitude: position.coords.latitude,
+				zoom: 9.5
+			}),
+			error => reject(error)
+		)
+	})
+}
 
 export default function MapView(props: MapViewProps) {
 	const { viewState, setViewState, selectedMarker, setSelectedMarker, setMapLoaded, openModal } = props
@@ -60,6 +72,22 @@ export default function MapView(props: MapViewProps) {
 	// Make a reference to the Map, so we can call map methods.
 	// Used for map.queryRenderedFeatures
 	const birdMap = useRef<MapRef>(null)
+
+
+	/* 
+	 * Gets user's position from the browser. 
+	*/
+	async function getPosition() {
+		try {
+			const coords = await getCoords()
+			setViewState(coords)
+		}
+		// Are errors always typed as any?
+		catch (err: any) {
+			if (err.message) console.log(err.message)
+			else console.log('Could not get the browser geographic position.')
+		}
+	}
 
 	// Gets an array of all counties visible on the map. If some counties are no longer present 
 	// that had been there, delete those counties and thier markers.
@@ -160,11 +188,21 @@ export default function MapView(props: MapViewProps) {
 			}}
 		>
 			<NavigationControl />
-			<GeolocateControl
+			{/* <GeolocateControl
 				showUserLocation={false}
 				fitBoundsOptions={{ maxZoom: 9.5 }}
 				showAccuracyCircle={false}
-			/>
+			/> */}
+			<div className="mapboxgl-control-container">
+				<div className="mapboxgl-ctrl-top-right location">
+					<div className="mapboxgl-ctrl mapboxgl-ctrl-group">
+						<button className="mapboxgl-ctrl-geolocate" onClick={getPosition} aria-label="Find my location">
+							<span className="mapboxgl-ctrl-icon" aria-hidden="true" title="Find my location"></span>
+						</button>
+					</div>
+				</div>
+			</div>
+			{/* <button className="position-button">get position</button> */}
 			{Object.values(markers).map(county => {
 				return county.map(m => {
 					return <Marker key={m.properties.locId}

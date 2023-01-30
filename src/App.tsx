@@ -7,7 +7,6 @@ import AboutModal from './components/AboutModal'
 import defaultLocations from './data/defaultLocations'
 import flyingBird from './images/flying-bird.gif'
 
-
 export default function App() {
 	// Initialize viewState (map center position and zoom value) as null.
 	// If viewState is null, the map will not render.
@@ -23,7 +22,6 @@ export default function App() {
 
 	// Get initial position.
 	useEffect(() => {
-		// getPosition()
 		const int = Math.floor(Math.random() * 10)
 		setViewState({
 			longitude: defaultLocations[int][0],
