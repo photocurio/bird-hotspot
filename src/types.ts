@@ -45,4 +45,4 @@ export type MapViewProps = {
 
 export type StateLookup = { [key: string]: string }
 
-export type Counties = [string]
+export type CountiesType = string[]
