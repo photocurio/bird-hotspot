@@ -1,34 +1,4 @@
-import { Dispatch, SetStateAction } from 'react'
-import { selectedMarkerType, viewType } from '../types'
-
-type StateLookup = { [key: string]: string }
-
-type MapViewProps = {
-	viewState: viewType,
-	setViewState: Dispatch<SetStateAction<viewType>>,
-	selectedMarker: selectedMarkerType,
-	setSelectedMarker: Dispatch<SetStateAction<selectedMarkerType>>,
-	setMapLoaded: Dispatch<SetStateAction<boolean>>,
-	openModal: boolean
-}
-
-type MarkerType = {
-	[key: string]: {
-		geometry: {
-			type: 'Point',
-			coordinates: [number, number]
-		},
-		type: 'Feature',
-		properties: {
-			locId: string,
-			locName: string,
-			countryCode: string,
-			subnational1Code: string,
-			subnational2Code: string
-		}
-	}[]
-}
-
+import { viewType, MarkerType, MapViewProps, StateLookup } from '../types'
 import states from '../data/states'
 import { useState, useRef } from 'react'
 import Map, { Layer, Source, NavigationControl, Marker, MapRef, LayerProps } from 'react-map-gl'
