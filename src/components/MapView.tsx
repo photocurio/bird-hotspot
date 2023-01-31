@@ -1,6 +1,6 @@
-import { viewType, MarkerType, MapViewProps, StateLookup } from '../types'
+import { viewType, MarkerType, MapViewProps, StateLookup, CountiesType } from '../types'
 import states from '../data/states'
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import Map, { Layer, Source, NavigationControl, Marker, MapRef, LayerProps } from 'react-map-gl'
 import { uniq, difference } from 'lodash'
 import 'mapbox-gl/dist/mapbox-gl.css'
@@ -43,6 +43,7 @@ function getCoords(): Promise<viewType> {
 export default function MapView(props: MapViewProps) {
 	const { viewState, setViewState, selectedMarker, setSelectedMarker, setMapLoaded, openModal } = props
 	const [markers, setMarkers] = useState<MarkerType>({})
+	const [counties, setCounties] = useState<CountiesType>([])
 
 	// Make a reference to the Map, so we can call map methods.
 	// Used for map.queryRenderedFeatures
@@ -69,13 +70,26 @@ export default function MapView(props: MapViewProps) {
 	 * that had been there, delete those counties and thier markers.
 	 * If new counties are present, fetch the markers in those counties, and add them to state.
 	 */
-	async function redrawHotspots() {
-		const countiesPresent: string[] = getCounties()
-		if (countiesPresent.length > 20) {
+	function redrawHotspots() {
+		const countiesPresent: CountiesType = getCounties()
+		if (counties.length > 20) {
 			return alert('Unable to fetch all the birding hotspots. Try zooming in.')
 		}
-		const countiesToRemove: string[] = difference(Object.keys(markers), countiesPresent)
-		const countiesToAdd: string[] = difference(countiesPresent, Object.keys(markers))
+		setCounties(countiesPresent)
+	}
+
+
+
+	useEffect(() => {
+		const countiesToRemove: CountiesType = difference(Object.keys(markers), counties)
+		const countiesToAdd: CountiesType = difference(counties, Object.keys(markers))
+		const addCounties = async (countiesToAdd: CountiesType) => {
+			await Promise.all(
+				countiesToAdd.map(async (countyCode: string) => {
+					await getHotspots(countyCode)
+				})
+			)
+		}
 
 		if (countiesToRemove.length) {
 			countiesToRemove.forEach((countyCode) => {
@@ -84,13 +98,9 @@ export default function MapView(props: MapViewProps) {
 		}
 
 		if (countiesToAdd.length) {
-			await Promise.all(
-				countiesToAdd.map(async (countyCode) => {
-					await getHotspots(countyCode)
-				})
-			)
+			addCounties(countiesToAdd)
 		}
-	}
+	}, [counties])
 
 	// Gets the birding hotspots for a county from eBird. Uses a serverless function.
 	// Hotspots are saved to state in an array in the markers object, keyed to the county code.
@@ -127,7 +137,7 @@ export default function MapView(props: MapViewProps) {
 	 * Return an array of 5 digit county FIPS codes. 
 	 * These are the counties that are present on the visible portion of the map.
 	 */
-	function getCounties(): string[] {
+	function getCounties(): CountiesType {
 		if (!birdMap.current) return ['map is not loaded']
 		const countiesPresent = birdMap.current.queryRenderedFeatures({
 			// @ts-ignore
@@ -152,21 +162,21 @@ export default function MapView(props: MapViewProps) {
 			mapStyle="mapbox://styles/mapbox/outdoors-v11"
 			onLoad={() => setMapLoaded(true)}
 			// Handler for the sourceData event.
-			onSourceData={async e => {
+			onSourceData={e => {
 				// This condition filters out the wrong events.
 				if (e.sourceId !== 'countySource' || !e.isSourceLoaded || !e.hasOwnProperty('tile')) return
 				// Draw the hotspots when the countySource is loaded and has a title.
-				await redrawHotspots()
+				redrawHotspots()
 			}}
 			// Handler for moving the map.
-			onMoveEnd={async e => {
+			onMoveEnd={e => {
 				const view = e.viewState
 				setViewState({
 					longitude: view.longitude,
 					latitude: view.latitude,
 					zoom: view.zoom
 				})
-				await redrawHotspots()
+				redrawHotspots()
 			}}
 		>
 			<NavigationControl />
