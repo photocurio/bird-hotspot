@@ -56,7 +56,6 @@ export default function MapView(props: MapViewProps) {
 		try {
 			const coords = await getCoords()
 			setViewState(coords)
-			await redrawHotspots()
 		}
 		// Are errors always typed as any?
 		catch (err: any) {
