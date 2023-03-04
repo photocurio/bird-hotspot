@@ -176,7 +176,6 @@ export default function MapView(props: MapViewProps) {
 					latitude: view.latitude,
 					zoom: view.zoom
 				})
-				redrawHotspots()
 			}}
 		>
 			<NavigationControl />
