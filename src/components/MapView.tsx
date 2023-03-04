@@ -76,10 +76,12 @@ export default function MapView(props: MapViewProps) {
 		setCounties(countiesPresent)
 	}
 
+	// Refreshes the counties array when the viewState changes.
 	useEffect(() => {
 		redrawHotspots()
 	}, [viewState])
 
+	// Refreshes the hotspots when the counties change.
 	useEffect(() => {
 		const countiesToRemove: CountiesType = difference(Object.keys(markers), counties)
 		const countiesToAdd: CountiesType = difference(counties, Object.keys(markers))
@@ -179,6 +181,9 @@ export default function MapView(props: MapViewProps) {
 			}}
 		>
 			<NavigationControl />
+			{/**
+			  * THis is faster than the Mapbox GL function.
+			  */ }
 			<div className="mapboxgl-control-container">
 				<div className="mapboxgl-ctrl-top-right location">
 					<div className="mapboxgl-ctrl mapboxgl-ctrl-group">
