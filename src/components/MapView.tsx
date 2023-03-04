@@ -178,15 +178,6 @@ export default function MapView(props: MapViewProps) {
 				})
 				redrawHotspots()
 			}}
-			onZoomEnd={(e) => {
-				const view = e.viewState
-				setViewState({
-					longitude: view.longitude,
-					latitude: view.latitude,
-					zoom: view.zoom
-				})
-				redrawHotspots()
-			}}
 		>
 			<NavigationControl />
 			<div className="mapboxgl-control-container">
