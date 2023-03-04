@@ -71,13 +71,14 @@ export default function MapView(props: MapViewProps) {
 	 */
 	function redrawHotspots() {
 		const countiesPresent: CountiesType = getCounties()
-		if (counties.length > 20) {
-			return alert('Unable to fetch all the birding hotspots. Try zooming in.')
-		}
+		// Limit the number of counties to 20.
+		countiesPresent.splice(20)
 		setCounties(countiesPresent)
 	}
 
-
+	useEffect(() => {
+		redrawHotspots()
+	}, [viewState])
 
 	useEffect(() => {
 		const countiesToRemove: CountiesType = difference(Object.keys(markers), counties)
