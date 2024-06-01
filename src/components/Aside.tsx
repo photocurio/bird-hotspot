@@ -2,16 +2,14 @@ import { Dispatch, SetStateAction } from 'react'
 import { selectedMarkerType, observationsType } from '../types'
 
 type detailProps = {
-	selectedMarker: selectedMarkerType,
-	showDetail: boolean,
-	setShowDetail: Dispatch<SetStateAction<boolean>>,
-	observations: observationsType[],
+	selectedMarker: selectedMarkerType
+	showDetail: boolean
+	setShowDetail: Dispatch<SetStateAction<boolean>>
+	observations: observationsType[]
 	noObservations: boolean
 }
 
-
 const Aside = (props: detailProps) => {
-
 	const { selectedMarker, showDetail, setShowDetail, observations, noObservations } = props
 
 	return (
@@ -32,16 +30,22 @@ const Aside = (props: detailProps) => {
 				</svg>
 			</button>
 			{selectedMarker && <h5>{selectedMarker.locName}</h5>}
-			{noObservations ?
-				<div className='obs-wrapper'>No observations recorded in the past 7 days.</div> :
-				<div className='obs-wrapper'>Observations, past 7 days:
-					<ul className='obs' >
-						{observations.length && observations.map(
-							hotspot => <li key={hotspot.speciesCode}>{hotspot.comName}, {hotspot.howMany ? hotspot.howMany : 1}</li>
-						)}
+			{noObservations ? (
+				<div className="obs-wrapper">No observations recorded in the past 7 days.</div>
+			) : (
+				<div className="obs-wrapper">
+					Observations, past 7 days:
+					<ul className="obs">
+						{observations.length &&
+							observations.map(hotspot => (
+								<li key={hotspot.speciesCode}>
+									{hotspot.comName}, {hotspot.howMany ? hotspot.howMany : 1}
+								</li>
+							))
+						}
 					</ul>
 				</div>
-			}
+			)}
 		</aside>
 	)
 }
