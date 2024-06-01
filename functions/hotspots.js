@@ -35,7 +35,13 @@ exports.handler = async ( event ) => {
 			ebirdApi.searchParams.set( 'fmt', 'json' )
 			ebirdApi.searchParams.set( 'back', back )
 
-			const hotspots = await fetch( ebirdApi, { method: 'GET', redirect: 'follow' } )
+			const hotspots = await fetch( ebirdApi, {
+				method: 'GET',
+				redirect: 'follow',
+				headers: {
+					'x-ebirdapitoken': process.env.EBIRD_TOKEN
+				}
+			} )
 				.then( response => {
 					if ( response.status === 200 ) return response.json()
 					else return {
